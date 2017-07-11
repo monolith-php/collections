@@ -1,5 +1,4 @@
-# Collections
-By Monolith
+# Monolith: Collections
 
 ### Installation
 In composer.json
