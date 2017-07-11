@@ -1,0 +1,28 @@
+{
+    "name": "monolith/collections",
+    "description": "Monolith: Collections",
+    "license": "MIT",
+    "keywords": [
+        "monolith",
+        "collections"
+    ],
+    "homepage": "https://www.monolith-php.com",
+    "authors": [
+        {
+            "name": "Mitchell van Wijngaarden",
+            "email": "mitchell@kooding.nl"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Monolith\\Collections\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
