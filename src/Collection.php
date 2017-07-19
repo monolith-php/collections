@@ -36,8 +36,8 @@ class Collection implements IteratorAggregate, Countable {
         return new static(array_map($f, $this->items));
     }
 
-    public function reduce(callable $f, $initial = null) {
-        return array_reduce($this->items, $f, $initial);
+    public function reduce(callable $f, $initial = null): Collection {
+        return new static(array_reduce($this->items, $f, $initial));
     }
 
     public function filter(callable $f): Collection {
@@ -56,8 +56,8 @@ class Collection implements IteratorAggregate, Countable {
         return clone $this;
     }
 
-    public function merge(Collection $c): Collection {
-        return new static(array_merge($this->items, $c->toArray()));
+    public function merge(Collection $that): Collection {
+        return new static(array_merge($this->items, $that->items));
     }
 
     public function reverse(): Collection {
