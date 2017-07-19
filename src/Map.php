@@ -1,9 +1,13 @@
 <?php namespace Monolith\Collections;
 
 class Map {
-    private $items = [];
+    private $items;
 
-    public function hasKey(string $key): bool {
+    public function __construct(array $items = []) {
+        $this->items = $items;
+    }
+
+    public function has(string $key): bool {
         return array_key_exists($key, $this->items);
     }
 
