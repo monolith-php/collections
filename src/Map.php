@@ -14,4 +14,8 @@ class Map {
     public function get(string $key) {
         return $this->items[$key];
     }
+
+    public function toArray(): array {
+        return $this->items;
+    }
 }
