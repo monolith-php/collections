@@ -1,6 +1,7 @@
 <?php namespace Monolith\Collections;
 
 class Map {
+
     private $items;
 
     public function __construct(array $items = []) {

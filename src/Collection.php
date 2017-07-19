@@ -5,6 +5,7 @@ use Countable;
 use IteratorAggregate;
 
 class Collection implements IteratorAggregate, Countable {
+    
     /** @var array */
     protected $items;
 
