@@ -11,7 +11,7 @@ class Map {
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value) {
+    public function add(string $key, $value): void {
         $this->items[$key] = $value;
     }
 
