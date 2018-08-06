@@ -11,6 +11,10 @@
         {
             "name": "Mitchell van Wijngaarden",
             "email": "mitchell@kooding.nl"
+        },
+        {
+            "name": "Shawn McCool",
+            "email": "shawn@heybigname.com"
         }
     ],
     "require": {
