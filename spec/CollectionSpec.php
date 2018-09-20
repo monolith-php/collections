@@ -25,9 +25,8 @@ class CollectionSpec extends ObjectBehavior {
 
     function it_can_count_the_collection() {
 
-        $collection = $this->add('hats');
-        $collection = $collection->add('cats');
-        $collection->count()->shouldBe(2);
+        $collection = $this->add('hats')->add('cats')->add('dogs');
+        $collection->count()->shouldBe(3);
     }
 
     function it_can_add_items_to_the_collection() {
