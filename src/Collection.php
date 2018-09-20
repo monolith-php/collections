@@ -79,10 +79,4 @@ class Collection implements IteratorAggregate, Countable {
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->items);
     }
-
-    public function __clone() {
-        foreach ($this->items as $i => $item) {
-            $this->items[$i] = $item;
-        }
-    }
 }

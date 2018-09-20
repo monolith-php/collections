@@ -23,4 +23,8 @@ class Map {
     public function toArray(): array {
         return $this->items;
     }
+
+    public function copy(): Map {
+        return clone $this;
+    }
 }
