@@ -1,0 +1,6 @@
+suites:
+  main:
+    namespace: "Monolith\\Collections"
+    psr4_prefix: "Monolith\\Collections"
+    src_path: src
+formatter.name: pretty

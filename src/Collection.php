@@ -13,13 +13,17 @@ class Collection implements IteratorAggregate, Countable {
         $this->items = $items;
     }
 
+    public static function list(...$items): Collection {
+        return new static($items);
+    }
+
     public function count(): int {
         return count($this->items);
     }
 
-    public function add($value): Collection {
+    public function add($item): Collection {
         $items = $this->items;
-        $items[] = $value;
+        $items[] = $item;
         return new static($items);
     }
 
@@ -37,16 +41,20 @@ class Collection implements IteratorAggregate, Countable {
         return new static(array_map($f, $this->items));
     }
 
-    public function reduce(callable $f, $initial = null): Collection {
-        return new static(array_reduce($this->items, $f, $initial));
+    public function reduce(callable $f, $initial = null) {
+        return array_reduce($this->items, $f, $initial);
     }
 
     public function filter(callable $f): Collection {
         return new static(array_filter($this->items, $f));
     }
 
-    public function first() {
+    public function head() {
         return array_values($this->items)[0];
+    }
+
+    public function tail() {
+        return new static(array_slice($this->items, 1));
     }
 
     public function toArray(): array {
@@ -58,6 +66,9 @@ class Collection implements IteratorAggregate, Countable {
     }
 
     public function merge(Collection $that): Collection {
+        if (get_class($this) !== get_class($that)) {
+            throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
+        }
         return new static(array_merge($this->items, $that->items));
     }
 
