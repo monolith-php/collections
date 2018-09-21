@@ -50,7 +50,7 @@ class Collection implements IteratorAggregate, Countable {
     }
 
     public function head() {
-        return array_values($this->items)[0];
+        return isset($this->items[0]) ? array_values($this->items)[0] : null;
     }
 
     public function tail() {
