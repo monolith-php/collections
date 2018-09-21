@@ -150,4 +150,13 @@ class CollectionSpec extends ObjectBehavior {
 
         $this->equals(new Collection($items))->shouldBe(true);
     }
+
+    function it_can_tell_if_its_empty() {
+
+        $emptyCollection = new Collection;
+        expect($emptyCollection)->isEmpty()->shouldBe(true);
+
+        $unemptyCollection = new Collection([1, 2]);
+        expect($unemptyCollection)->isEmpty()->shouldBe(false);
+    }
 }

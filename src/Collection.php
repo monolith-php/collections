@@ -79,4 +79,8 @@ class Collection implements IteratorAggregate, Countable {
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->items);
     }
+
+    public function isEmpty(): bool {
+        return empty($this->items);
+    }
 }
