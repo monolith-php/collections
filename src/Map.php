@@ -24,6 +24,11 @@ class Map
         return isset($this->items[$key]) ? $this->items[$key] : null;
     }
 
+    public function remove(string $key): void
+    {
+        unset($this->items[$key]);
+    }
+
     public function toArray(): array
     {
         return $this->items;
