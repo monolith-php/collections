@@ -2,6 +2,4 @@
 
 use Monolith\Collections\Collection;
 
-final class CollectionStub extends Collection {
-
-}
+final class CollectionStub extends Collection {}

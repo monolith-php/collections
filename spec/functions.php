@@ -33,11 +33,12 @@ use PhpSpec\Wrapper\Subject\WrappedObject;
 use PhpSpec\Wrapper\Unwrapper;
 use PhpSpec\Wrapper\Wrapper;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+
 $useExpect = true;
 if (getenv('PHPSPEC_DISABLE_EXPECT') || (defined('PHPSPEC_DISABLE_EXPECT') && PHPSPEC_DISABLE_EXPECT)) {
     $useExpect = false;
 }
-if ($useExpect && !function_exists('expect')) {
+if ($useExpect && ! function_exists('expect')) {
     function expect($sus)
     {
         $container = new IndexedServiceContainer;
@@ -49,7 +50,7 @@ if ($useExpect && !function_exists('expect')) {
         $accessInspector = new MagicAwareAccessInspector(new VisibilityAccessInspector);
         $reflectionFactory = new ReflectionFactory();
         $exampleNode = new ExampleNode('expect', new \ReflectionFunction(__FUNCTION__));
-        $matchers  = new MatcherManager($presenter);
+        $matchers = new MatcherManager($presenter);
         $matchers->add(new IdentityMatcher($presenter));
         $matchers->add(new ComparisonMatcher($presenter));
         $matchers->add(new ThrowMatcher($unwrapper, $presenter, $reflectionFactory));
@@ -71,7 +72,7 @@ if ($useExpect && !function_exists('expect')) {
                 foreach ($object->getMatchers() as $name => $matcher) {
                     if ($matcher instanceof Matcher) {
                         $matchers->add($matcher);
-                    } elseif(is_callable($matcher)) {
+                    } elseif (is_callable($matcher)) {
                         $matchers->add(new CallbackMatcher($name, $matcher, $presenter));
                     } else {
                         throw new \RuntimeException('Custom matcher has to implement "PhpSpec\Matcher\MatcherInterface" or be a callable');
@@ -89,7 +90,8 @@ if ($useExpect && !function_exists('expect')) {
     }
 }
 
-function d(...$vars) {
+function d(...$vars)
+{
     foreach ($vars as $var) {
         var_dump($var);
     }
