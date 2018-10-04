@@ -1,6 +1,6 @@
 <?php namespace Monolith\Collections;
 
-class Map
+class MutableMap
 {
     private $items;
 
@@ -14,11 +14,9 @@ class Map
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): Map
+    public function add(string $key, $value): void
     {
-        $newItems = $this->items;
-        $newItems[$key] = $value;
-        return new static($newItems);
+        $this->items[$key] = $value;
     }
 
     public function get(string $key)
@@ -26,11 +24,9 @@ class Map
         return isset($this->items[$key]) ? $this->items[$key] : null;
     }
 
-    public function remove(string $key): Map
+    public function remove(string $key): void
     {
-        $newItems = $this->items;
-        unset($newItems[$key]);
-        return new static($newItems);
+        unset($this->items[$key]);
     }
 
     public function toArray(): array
@@ -38,16 +34,15 @@ class Map
         return $this->items;
     }
 
-    public function merge(Map $that): Map
+    public function merge(MutableMap $that): void
     {
         if (get_class($this) !== get_class($that)) {
             throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
         }
-        $newItems = array_merge($this->items, $that->items);
-        return new static($newItems);
+        $this->items = array_merge($this->items, $that->items);
     }
 
-    public function copy(): Map
+    public function copy(): MutableMap
     {
         return clone $this;
     }
