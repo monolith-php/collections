@@ -14,6 +14,11 @@ class MutableCollection implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
+    public static function list(...$items): MutableCollection
+    {
+        return new static($items);
+    }
+
     public function count(): int
     {
         return count($this->items);
@@ -51,14 +56,19 @@ class MutableCollection implements IteratorAggregate, Countable
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(callable $f): MutableCollection
+    public function filter(callable $f)
     {
         $this->items = array_filter($this->items, $f);
     }
 
-    public function first()
+    public function head()
     {
-        return array_values($this->items)[0];
+        return isset($this->items[0]) ? array_values($this->items)[0] : null;
+    }
+
+    public function tail()
+    {
+        return new static(array_slice($this->items, 1));
     }
 
     public function toArray(): array
@@ -71,9 +81,18 @@ class MutableCollection implements IteratorAggregate, Countable
         return clone $this;
     }
 
-    public function merge(MutableCollection $c)
+    public function merge(MutableCollection $that)
     {
-        $this->items = array_merge($this->items, $c->toArray());
+        if (get_class($this) !== get_class($that)) {
+            throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
+        }
+
+        $this->items = array_merge($this->items, $that->toArray());
+    }
+
+    public function reverse()
+    {
+        return $this->items = array_reverse($this->items);
     }
 
     public function getIterator(): ArrayIterator
@@ -86,5 +105,14 @@ class MutableCollection implements IteratorAggregate, Countable
         foreach ($this->items as $i => $item) {
             $this->items[$i] = $item;
         }
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
+    public function toCollection() {
+        return new Collection($this->items);
     }
 }
