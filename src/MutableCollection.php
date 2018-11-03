@@ -41,7 +41,7 @@ class MutableCollection implements IteratorAggregate, Countable
         return new static(array_map($f, $this->items));
     }
 
-    public function flatMap(callable $f): Collection
+    public function flatMap(callable $f): MutableCollection
     {
         return new static(array_merge(...array_map($f, $this->items)));
     }
