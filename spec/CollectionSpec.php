@@ -53,6 +53,17 @@ class CollectionSpec extends ObjectBehavior
         expect($i)->shouldBe(9);
     }
 
+    function it_can_apply_a_function_then_flatten_the_resulting_array()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+
+        $flatMap = $this->flatMap(function($item) {
+            return [$item, $item+10, $item+20];
+        });
+
+        $flatMap->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
+    }
+
     function it_can_compare_two_collections_by_their_contents_with_contravariance()
     {
         $this->beConstructedWith([1, 2, 3]);
