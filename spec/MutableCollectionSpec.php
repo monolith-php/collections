@@ -56,8 +56,8 @@ class MutableCollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $flatMap = $this->flatMap(function($item) {
-            return [$item, $item+10, $item+20];
+        $flatMap = $this->flatMap(function ($item) {
+            return [$item, $item + 10, $item + 20];
         });
 
         $flatMap->equals(new MutableCollection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
@@ -173,5 +173,14 @@ class MutableCollectionSpec extends ObjectBehavior
 
         $unemptyCollection = new MutableCollection([1, 2]);
         expect($unemptyCollection)->isEmpty()->shouldBe(false);
+    }
+
+    function it_can_return_the_first_item_matching_a_positive_callback_result()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+        $item = $this->first(function ($item) {
+            return $item == 2;
+        });
+        $item->shouldBe(2);
     }
 }

@@ -61,6 +61,16 @@ class MutableCollection implements IteratorAggregate, Countable
         $this->items = array_filter($this->items, $f);
     }
 
+    public function first(callable $f)
+    {
+        foreach ($this->items as $item) {
+            if ($f($item)) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
     public function head()
     {
         return isset($this->items[0]) ? array_values($this->items)[0] : null;
@@ -112,7 +122,8 @@ class MutableCollection implements IteratorAggregate, Countable
         return empty($this->items);
     }
 
-    public function toCollection() {
+    public function toCollection()
+    {
         return new Collection($this->items);
     }
 }
