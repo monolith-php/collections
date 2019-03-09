@@ -9,14 +9,10 @@
         {
             "name": "Shawn McCool",
             "email": "shawn@heybigname.com"
-        },
-        {
-            "name": "Mitchell van Wijngaarden",
-            "email": "mitchell@kooding.nl"
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.2"
     },
     "require-dev": {
         "phpspec/phpspec": "^5.0"
