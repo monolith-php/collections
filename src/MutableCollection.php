@@ -94,7 +94,7 @@ class MutableCollection implements IteratorAggregate, Countable
     public function merge(MutableCollection $that)
     {
         if (get_class($this) !== get_class($that)) {
-            throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
+            throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
         }
 
         $this->items = array_merge($this->items, $that->toArray());

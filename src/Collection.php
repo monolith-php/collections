@@ -96,7 +96,7 @@ class Collection implements IteratorAggregate, Countable
     public function merge(Collection $that): Collection
     {
         if (get_class($this) !== get_class($that)) {
-            throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
+            throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
         }
         return new static(array_merge($this->items, $that->items));
     }

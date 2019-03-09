@@ -41,7 +41,7 @@ class Map
     public function merge(Map $that): Map
     {
         if (get_class($this) !== get_class($that)) {
-            throw new CannotMergeCollectionsOfDifferentType(get_class($this) . ' != ' . get_class($that));
+            throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
         }
         $newItems = array_merge($this->items, $that->items);
         return new static($newItems);

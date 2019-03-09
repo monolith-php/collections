@@ -1,7 +1,7 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\CannotMergeCollectionsOfDifferentType;
 use Monolith\Collections\Collection;
+use Monolith\Collections\CollectionTypeError;
 use PhpSpec\ObjectBehavior;
 
 class CollectionSpec extends ObjectBehavior
@@ -144,7 +144,7 @@ class CollectionSpec extends ObjectBehavior
     function it_can_only_merge_collections_that_share_a_type()
     {
         $this->beConstructedWith([1, 2, 3]);
-        $this->shouldThrow(CannotMergeCollectionsOfDifferentType::class)->during('merge', [new CollectionStub]);
+        $this->shouldThrow(CollectionTypeError::class)->during('merge', [new CollectionStub]);
     }
 
     function it_can_reverse_the_order_of_items_in_the_collection()
