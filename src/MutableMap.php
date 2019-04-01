@@ -34,6 +34,11 @@ class MutableMap
         return $this->items;
     }
 
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
     public function merge(MutableMap $that): void
     {
         if (get_class($this) !== get_class($that)) {

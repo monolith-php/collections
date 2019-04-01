@@ -67,11 +67,21 @@ class MapSpec extends ObjectBehavior
         ]);
     }
 
+    function it_can_count_its_items()
+    {
+        $this->beConstructedWith([
+            'dogs' => 'flavor',
+            'cats' => 'levers',
+        ]);
+
+        $this->count()->shouldBe(2);
+    }
+
     function it_returns_new_maps_when_merging_with_other_maps()
     {
         $this->beConstructedWith([
             'dogs' => 'flavor',
-            'cats' => 'levers'
+            'cats' => 'levers',
         ]);
 
         $newMap = $this->merge(new Map([
@@ -89,7 +99,7 @@ class MapSpec extends ObjectBehavior
     {
         $this->beConstructedWith([
             'dogs' => 'flavor',
-            'cats' => 'levers'
+            'cats' => 'levers',
         ]);
 
         $newMap = $this->copy();

@@ -74,6 +74,16 @@ class MutableMapSpec extends ObjectBehavior
         $this->get('loops')->shouldBe('groove');
     }
 
+    function it_can_count_its_items()
+    {
+        $this->beConstructedWith([
+            'dogs' => 'flavor',
+            'cats' => 'levers',
+        ]);
+
+        $this->count()->shouldBe(2);
+    }
+
     function it_can_be_copied()
     {
         $this->add('dogs', 'flavor');

@@ -38,6 +38,11 @@ class Map
         return $this->items;
     }
 
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
     public function merge(Map $that): Map
     {
         if (get_class($this) !== get_class($that)) {
