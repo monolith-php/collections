@@ -82,6 +82,9 @@ class MutableMapSpec extends ObjectBehavior
         ]);
 
         $this->count()->shouldBe(2);
+
+        // countable array
+        expect(count($this->getWrappedObject()))->shouldBe(2);
     }
 
     function it_can_be_copied()
@@ -93,5 +96,18 @@ class MutableMapSpec extends ObjectBehavior
 
         $newMap->get('dogs')->shouldBe('flavor');
         $newMap->get('cats')->shouldBe('levers');
+    }
+
+    function it_can_be_iterated_over()
+    {
+        $this->beConstructedWith([
+            'dogs' => 'flavor',
+            'cats' => 'levers',
+        ]);
+
+        foreach ($this->getWrappedObject() as $key => $value) {
+            if ($key == 'dogs') expect($value)->shouldBe('flavor');
+            if ($key == 'cats') expect($value)->shouldBe('levers');
+        }
     }
 }

@@ -1,6 +1,10 @@
 <?php namespace Monolith\Collections;
 
-class MutableMap
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+
+class MutableMap implements IteratorAggregate, Countable
 {
     private $items;
 
@@ -50,5 +54,10 @@ class MutableMap
     public function copy(): MutableMap
     {
         return clone $this;
+    }
+
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->items);
     }
 }
