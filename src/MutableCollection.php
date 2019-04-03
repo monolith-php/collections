@@ -73,7 +73,7 @@ class MutableCollection implements IteratorAggregate, Countable
 
     public function head()
     {
-        return isset($this->items[0]) ? array_values($this->items)[0] : null;
+        return reset($this->items) ?: null;
     }
 
     public function tail()
