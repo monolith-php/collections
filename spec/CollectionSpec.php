@@ -57,8 +57,8 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $flatMap = $this->flatMap(function($item) {
-            return [$item, $item+10, $item+20];
+        $flatMap = $this->flatMap(function ($item) {
+            return [$item, $item + 10, $item + 20];
         });
 
         $flatMap->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
@@ -182,5 +182,26 @@ class CollectionSpec extends ObjectBehavior
             return $item == 2;
         });
         $item->shouldBe(2);
+    }
+
+    function it_can_optionally_compare_equality_with_a_comparison_function()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $different = new Collection([2, 3, 4, 5]);
+
+        $this->equals($different)->shouldBe(false);
+
+        $this->equals($different, function($one, $two) {
+            return true;
+        })->shouldBe(true);
+
+        $this->equals($different, function($one, $two) {
+            return false;
+        })->shouldBe(false);
+
+        $this->equals($different, function($one, $two) {
+            return $one == $two-1;
+        })->shouldBe(true);
     }
 }

@@ -38,9 +38,25 @@ class Collection implements IteratorAggregate, Countable
         }
     }
 
-    public function equals(Collection $that): bool
+    public function equals(Collection $that, callable $func = null): bool
     {
-        return get_class($this) === get_class($that) && $this->items === $that->items;
+        if (is_null($func)) {
+            return get_class($this) === get_class($that) && $this->items === $that->items;
+        }
+
+        // always unequal with different counts
+        if ($this->count() != $that->count()) {
+            return false;
+        }
+
+        $one = $this->toArray();
+        $two = $that->toArray();
+
+        foreach (range(0, $this->count() - 1) as $i) {
+            if ( ! $func($one[0], $two[0])) return false;
+        }
+
+        return true;
     }
 
     public function map(callable $f): Collection
