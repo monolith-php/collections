@@ -1,10 +1,11 @@
 <?php namespace Monolith\Collections;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class Collection implements IteratorAggregate, Countable
+class Collection implements IteratorAggregate, Countable, ArrayAccess
 {
     /** @var array */
     protected $items;
@@ -143,5 +144,54 @@ class Collection implements IteratorAggregate, Countable
     public function implode($delimiter = ', '): string
     {
         return implode($delimiter, $this->items);
+    }
+
+    /**
+     * Whether a offset exists
+     * @link https://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset <p>
+     * An offset to check for.
+     * </p>
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
+     * @since 5.0.0
+     */
+    public function offsetExists($offset): bool
+    {
+        return array_key_exists($offset, $this->items);
+    }
+
+    /**
+     * Offset to retrieve
+     * @link https://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset <p>
+     * The offset to retrieve.
+     * </p>
+     * @return mixed Can return all value types.
+     * @since 5.0.0
+     */
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    /**
+     * Offset to set
+     * This is not supported due to immutable nature.
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new CannotWriteToImmutableCollectionUsingArrayAccess();
+    }
+
+    /**
+     * Offset to unset
+     * This is not supported due to immutable nature.
+     */
+    public function offsetUnset($offset)
+    {
+        throw new CannotWriteToImmutableCollectionUsingArrayAccess();
     }
 }

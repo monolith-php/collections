@@ -212,4 +212,22 @@ class CollectionSpec extends ObjectBehavior
         $this->implode(': ')->shouldBe('1: 2: 3: 4');
         $this->implode('z ')->shouldBe('1z 2z 3z 4');
     }
+
+    function it_provides_php_array_access() {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        # offset get
+        $this[0]->shouldBe(1);
+
+        # offset exists
+        $collection = $this->getWrappedObject();
+
+        expect(
+            isset($collection[1])
+        )->shouldBe(true);
+
+        expect(
+            isset($collection[100])
+        )->shouldBe(false);
+    }
 }
