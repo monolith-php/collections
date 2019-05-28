@@ -53,7 +53,9 @@ class Collection implements IteratorAggregate, Countable
         $two = $that->toArray();
 
         foreach (range(0, $this->count() - 1) as $i) {
-            if ( ! $func($one[0], $two[0])) return false;
+            if ( ! $func($one[0], $two[0])) {
+                return false;
+            }
         }
 
         return true;
@@ -130,5 +132,16 @@ class Collection implements IteratorAggregate, Countable
     public function isEmpty(): bool
     {
         return empty($this->items);
+    }
+
+    /**
+     * Concatenates string items with a delimiter.
+     *
+     * @param string $delimiter
+     * @return string
+     */
+    public function implode($delimiter = ', '): string
+    {
+        return implode($delimiter, $this->items);
     }
 }

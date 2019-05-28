@@ -192,16 +192,24 @@ class CollectionSpec extends ObjectBehavior
 
         $this->equals($different)->shouldBe(false);
 
-        $this->equals($different, function($one, $two) {
+        $this->equals($different, function ($one, $two) {
             return true;
         })->shouldBe(true);
 
-        $this->equals($different, function($one, $two) {
+        $this->equals($different, function ($one, $two) {
             return false;
         })->shouldBe(false);
 
-        $this->equals($different, function($one, $two) {
-            return $one == $two-1;
+        $this->equals($different, function ($one, $two) {
+            return $one == $two - 1;
         })->shouldBe(true);
+    }
+
+    function it_can_implode_scalar_items_with_a_delimiter()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $this->implode(': ')->shouldBe('1: 2: 3: 4');
+        $this->implode('z ')->shouldBe('1z 2z 3z 4');
     }
 }
