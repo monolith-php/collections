@@ -213,7 +213,8 @@ class CollectionSpec extends ObjectBehavior
         $this->implode('z ')->shouldBe('1z 2z 3z 4');
     }
 
-    function it_provides_php_array_access() {
+    function it_provides_php_array_access()
+    {
         $this->beConstructedWith([1, 2, 3, 4]);
 
         # offset get
@@ -229,5 +230,57 @@ class CollectionSpec extends ObjectBehavior
         expect(
             isset($collection[100])
         )->shouldBe(false);
+    }
+
+    function it_can_zip_two_collections()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd']));
+
+        $zipped[0]->shouldBe([
+            1,
+            'a',
+        ]);
+
+        $zipped[1]->shouldBe([
+            2,
+            'b',
+        ]);
+
+        $zipped[2]->shouldBe([
+            3,
+            'c',
+        ]);
+
+        $zipped[3]->shouldBe([
+            4,
+            'd',
+        ]);
+    }
+
+    function it_pads_the_shorter_of_two_zipped_collections_with_null()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $zipped = $this->zip(new Collection(['a', 'b']));
+
+        $zipped[2]->shouldBe([
+            3, null,
+        ]);
+
+        $zipped[3]->shouldBe([
+            4, null,
+        ]);
+
+        $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd', 'e', 'f']));
+
+        $zipped[4]->shouldBe([
+            null, 'e'
+        ]);
+
+        $zipped[5]->shouldBe([
+            null, 'f'
+        ]);
     }
 }
