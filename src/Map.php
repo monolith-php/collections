@@ -61,6 +61,16 @@ class Map implements IteratorAggregate, Countable
         return clone $this;
     }
 
+    /**
+     * Callable argument is $value, $key
+     *
+     * @param callable $f
+     */
+    public function each(callable $f)
+    {
+        array_walk($this->items, $f);
+    }
+
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);

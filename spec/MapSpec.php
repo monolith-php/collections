@@ -119,8 +119,24 @@ class MapSpec extends ObjectBehavior
         ]);
 
         foreach ($this->getWrappedObject() as $key => $value) {
-            if ($key == 'dogs') expect($value)->shouldBe('flavor');
-            if ($key == 'cats') expect($value)->shouldBe('levers');
+            if ($key == 'dogs') {
+                expect($value)->shouldBe('flavor');
+            }
+            if ($key == 'cats') {
+                expect($value)->shouldBe('levers');
+            }
         }
+    }
+
+    function it_can_walk_over_items()
+    {
+        $this->beConstructedWith([
+            'dogs' => 'flavor',
+        ]);
+        
+        $this->each(function ($value, $key) {
+            expect($value)->shouldBe('flavor');
+            expect($key)->shouldBe('dogs');
+        });
     }
 }
