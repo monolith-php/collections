@@ -95,5 +95,10 @@ function d(...$vars)
     foreach ($vars as $var) {
         var_dump($var);
     }
+}
+
+function dd(...$vars)
+{
+    d(...$vars);
     die();
 }

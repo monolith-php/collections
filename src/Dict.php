@@ -3,8 +3,10 @@
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use function spec\Monolith\Collections\dd;
 
-class Map implements IteratorAggregate, Countable
+class Dict
+    implements IteratorAggregate, Countable
 {
     private $items;
 
@@ -18,7 +20,7 @@ class Map implements IteratorAggregate, Countable
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): Map
+    public function add(string $key, $value): Dict
     {
         $newItems = $this->items;
         $newItems[$key] = $value;
@@ -30,7 +32,7 @@ class Map implements IteratorAggregate, Countable
         return isset($this->items[$key]) ? $this->items[$key] : null;
     }
 
-    public function remove(string $key): Map
+    public function remove(string $key): Dict
     {
         $newItems = $this->items;
         unset($newItems[$key]);
@@ -47,7 +49,7 @@ class Map implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function merge(Map $that): Map
+    public function merge(Dict $that): Dict
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -56,7 +58,7 @@ class Map implements IteratorAggregate, Countable
         return new static($newItems);
     }
 
-    public function copy(): Map
+    public function copy(): Dict
     {
         return clone $this;
     }
@@ -69,6 +71,32 @@ class Map implements IteratorAggregate, Countable
     public function each(callable $f)
     {
         array_walk($this->items, $f);
+    }
+
+    /**
+     * Don't forget to return [$key=>$value] to maintain associativity.
+     *
+     * @param callable $f
+     * @return Dict
+     */
+    public function map(callable $f): Dict
+    {
+        $newItems = [];
+
+        foreach ($this->items as $key => $value) {
+            $result = $f($value, $key);
+
+            if (
+                count($result) != 1 ||
+                ! is_array($result)
+            ) {
+                throw new DictMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
+            }
+
+            $newItems[key($result)] = $result[key($result)];
+        }
+
+        return new static($newItems);
     }
 
     public function getIterator(): ArrayIterator

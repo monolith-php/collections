@@ -1,13 +1,14 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\Map;
+use Monolith\Collections\Dict;
 use PhpSpec\ObjectBehavior;
 
-class MapSpec extends ObjectBehavior
+class DictSpec
+    extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(Map::class);
+        $this->shouldHaveType(Dict::class);
     }
 
     function it_can_be_constructed_with_an_associative_array_of_items()
@@ -36,22 +37,22 @@ class MapSpec extends ObjectBehavior
         $this->get('dogs')->shouldBe('robot');
     }
 
-    function it_returns_new_maps_when_adding_new_values_to_keys()
+    function it_returns_new_dicts_when_adding_new_values_to_keys()
     {
-        $newMap = $this->add('dogs', 'flavor');
+        $newDict = $this->add('dogs', 'flavor');
         $this->get('dogs')->shouldBe(null);
 
-        $newMap->get('dogs')->shouldBe('flavor');
+        $newDict->get('dogs')->shouldBe('flavor');
     }
 
-    function it_returns_new_maps_when_removing_values_by_key()
+    function it_returns_new_dicts_when_removing_values_by_key()
     {
         $this->beConstructedWith(['dogs' => 'flavor']);
 
-        $newMap = $this->remove('dogs');
+        $newDict = $this->remove('dogs');
         $this->get('dogs')->shouldBe('flavor');
 
-        $newMap->get('dogs')->shouldBe(null);
+        $newDict->get('dogs')->shouldBe(null);
     }
 
     function it_can_serialize_to_an_associative_array()
@@ -80,22 +81,22 @@ class MapSpec extends ObjectBehavior
         expect(count($this->getWrappedObject()))->shouldBe(2);
     }
 
-    function it_returns_new_maps_when_merging_with_other_maps()
+    function it_returns_new_dicts_when_merging_with_other_dicts()
     {
         $this->beConstructedWith([
             'dogs' => 'flavor',
             'cats' => 'levers',
         ]);
 
-        $newMap = $this->merge(new Map([
+        $newDict = $this->merge(new Dict([
             'loops' => 'groove',
         ]));
 
         $this->get('loops')->shouldBe(null);
 
-        $newMap->get('dogs')->shouldBe('flavor');
-        $newMap->get('cats')->shouldBe('levers');
-        $newMap->get('loops')->shouldBe('groove');
+        $newDict->get('dogs')->shouldBe('flavor');
+        $newDict->get('cats')->shouldBe('levers');
+        $newDict->get('loops')->shouldBe('groove');
     }
 
     function it_can_be_copied()
@@ -105,10 +106,10 @@ class MapSpec extends ObjectBehavior
             'cats' => 'levers',
         ]);
 
-        $newMap = $this->copy();
+        $newDict = $this->copy();
 
-        $newMap->get('dogs')->shouldBe('flavor');
-        $newMap->get('cats')->shouldBe('levers');
+        $newDict->get('dogs')->shouldBe('flavor');
+        $newDict->get('cats')->shouldBe('levers');
     }
 
     function it_can_be_iterated_over()
@@ -133,10 +134,30 @@ class MapSpec extends ObjectBehavior
         $this->beConstructedWith([
             'dogs' => 'flavor',
         ]);
-        
+
         $this->each(function ($value, $key) {
             expect($value)->shouldBe('flavor');
             expect($key)->shouldBe('dogs');
         });
+    }
+
+
+    function it_can_apply_a_function_to_each_item_and_return_a_new_dict_with_the_results()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3]
+        );
+
+        $mapped = $this->map(function ($number, $letter) {
+            return [++$letter => $number+1];
+        });
+
+        $mapped->toArray()->shouldBe([
+            'b' => 2,
+            'c' => 3,
+            'd' => 4
+        ]);
     }
 }
