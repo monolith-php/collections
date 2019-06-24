@@ -4,7 +4,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class MutableMap implements IteratorAggregate, Countable
+class MutableDict implements IteratorAggregate, Countable
 {
     private $items;
 
@@ -43,7 +43,7 @@ class MutableMap implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function merge(MutableMap $that): void
+    public function merge(MutableDict $that): void
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -51,7 +51,7 @@ class MutableMap implements IteratorAggregate, Countable
         $this->items = array_merge($this->items, $that->items);
     }
 
-    public function copy(): MutableMap
+    public function copy(): MutableDict
     {
         return clone $this;
     }

@@ -1,13 +1,13 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\MutableMap;
+use Monolith\Collections\MutableDict;
 use PhpSpec\ObjectBehavior;
 
-class MutableMapSpec extends ObjectBehavior
+class MutableDictSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(MutableMap::class);
+        $this->shouldHaveType(MutableDict::class);
     }
 
     function it_can_be_constructed_with_an_associative_array_of_items()
@@ -65,7 +65,7 @@ class MutableMapSpec extends ObjectBehavior
         $this->add('dogs', 'flavor');
         $this->add('cats', 'levers');
 
-        $this->merge(new MutableMap([
+        $this->merge(new MutableDict([
             'loops' => 'groove',
         ]));
 
