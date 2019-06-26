@@ -2,6 +2,7 @@
 
 use Monolith\Collections\Collection;
 use Monolith\Collections\CollectionTypeError;
+use Monolith\Collections\Dict;
 use PhpSpec\ObjectBehavior;
 
 class CollectionSpec extends ObjectBehavior
@@ -97,6 +98,21 @@ class CollectionSpec extends ObjectBehavior
         }, '');
 
         $reduced->shouldBe(' 1 2 3');
+    }
+
+    function it_can_map_values_to_a_dict()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+
+        $dict = $this->toDict();
+
+        $dict->shouldHaveType(Dict::class);
+
+        $dict->toArray()->shouldBe([
+            0 => 1,
+            1 => 2,
+            2 => 3,
+        ]);
     }
 
     function it_can_return_the_first_item_in_the_collection()
@@ -266,21 +282,25 @@ class CollectionSpec extends ObjectBehavior
         $zipped = $this->zip(new Collection(['a', 'b']));
 
         $zipped[2]->shouldBe([
-            3, null,
+            3,
+            null,
         ]);
 
         $zipped[3]->shouldBe([
-            4, null,
+            4,
+            null,
         ]);
 
         $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd', 'e', 'f']));
 
         $zipped[4]->shouldBe([
-            null, 'e'
+            null,
+            'e',
         ]);
 
         $zipped[5]->shouldBe([
-            null, 'f'
+            null,
+            'f',
         ]);
     }
 }

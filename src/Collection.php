@@ -107,6 +107,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $this->copy()->items;
     }
 
+    public function toDict(): Dict
+    {
+        return new Dict($this->toArray());
+    }
+
     public function copy(): Collection
     {
         return clone $this;
