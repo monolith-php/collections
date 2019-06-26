@@ -3,7 +3,6 @@
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use function spec\Monolith\Collections\dd;
 
 class Dict
     implements IteratorAggregate, Countable
@@ -44,6 +43,16 @@ class Dict
         return $this->items;
     }
 
+    public function keys(): Collection
+    {
+        return new Collection(array_keys($this->items));
+    }
+
+    public function values(): Collection
+    {
+        return new Collection(array_values($this->items));
+    }
+
     public function count(): int
     {
         return count($this->items);
@@ -78,6 +87,7 @@ class Dict
      *
      * @param callable $f
      * @return Dict
+     * @throws DictMapFunctionHasIncorrectReturnFormat
      */
     public function map(callable $f): Dict
     {

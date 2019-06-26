@@ -160,4 +160,30 @@ class DictSpec
             'd' => 4
         ]);
     }
+
+    function it_can_output_collections_containing_only_keys()
+    {
+        $this->beConstructedWith([
+                'a' => 1,
+                'b' => 2,
+                'c' => 3]
+        );
+
+        $this->keys()->toArray()->shouldBe([
+            'a', 'b', 'c'
+        ]);
+    }
+
+    function it_can_output_collections_containing_only_values()
+    {
+        $this->beConstructedWith([
+                'a' => 1,
+                'b' => 2,
+                'c' => 3]
+        );
+
+        $this->values()->toArray()->shouldBe([
+            1, 2, 3
+        ]);
+    }
 }
