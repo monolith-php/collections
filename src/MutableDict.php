@@ -13,6 +13,11 @@ class MutableDict implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
+    public static function empty(): MutableDict
+    {
+        return new static;
+    }
+
     public function has(string $key): bool
     {
         return array_key_exists($key, $this->items);

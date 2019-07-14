@@ -3,12 +3,17 @@
 use Monolith\Collections\Dict;
 use PhpSpec\ObjectBehavior;
 
-class DictSpec
-    extends ObjectBehavior
+class DictSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
         $this->shouldHaveType(Dict::class);
+    }
+
+    function it_can_be_constructed_as_an_empty_dictionary()
+    {
+        $this->beConstructedThrough('empty', []);
+        $this->count()->shouldBe(0);
     }
 
     function it_can_be_constructed_with_an_associative_array_of_items()
@@ -145,19 +150,20 @@ class DictSpec
     function it_can_apply_a_function_to_each_item_and_return_a_new_dict_with_the_results()
     {
         $this->beConstructedWith([
-            'a' => 1,
-            'b' => 2,
-            'c' => 3]
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
         );
 
         $mapped = $this->map(function ($number, $letter) {
-            return [++$letter => $number+1];
+            return [++$letter => $number + 1];
         });
 
         $mapped->toArray()->shouldBe([
             'b' => 2,
             'c' => 3,
-            'd' => 4
+            'd' => 4,
         ]);
     }
 
@@ -166,11 +172,14 @@ class DictSpec
         $this->beConstructedWith([
                 'a' => 1,
                 'b' => 2,
-                'c' => 3]
+                'c' => 3,
+            ]
         );
 
         $this->keys()->toArray()->shouldBe([
-            'a', 'b', 'c'
+            'a',
+            'b',
+            'c',
         ]);
     }
 
@@ -179,11 +188,14 @@ class DictSpec
         $this->beConstructedWith([
                 'a' => 1,
                 'b' => 2,
-                'c' => 3]
+                'c' => 3,
+            ]
         );
 
         $this->values()->toArray()->shouldBe([
-            1, 2, 3
+            1,
+            2,
+            3,
         ]);
     }
 }

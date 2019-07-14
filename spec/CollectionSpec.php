@@ -19,6 +19,12 @@ class CollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(10);
     }
 
+    function it_can_be_initialized_as_an_empty_collection()
+    {
+        $this->beConstructedThrough('empty', []);
+        $this->count()->shouldBe(0);
+    }
+
     function it_can_be_initialized_by_a_variadic_list()
     {
         $this->beConstructedThrough('list', [1, 2, 3]);

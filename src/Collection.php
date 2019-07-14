@@ -15,6 +15,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         $this->items = $items;
     }
 
+    public static function empty(): Collection
+    {
+        return new static;
+    }
+
     public static function list(...$items): Collection
     {
         return new static($items);

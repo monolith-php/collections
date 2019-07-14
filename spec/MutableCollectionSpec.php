@@ -11,6 +11,12 @@ class MutableCollectionSpec extends ObjectBehavior
         $this->shouldHaveType(MutableCollection::class);
     }
 
+    function it_can_be_initialized_as_an_empty_collection()
+    {
+        $this->beConstructedThrough('empty', []);
+        $this->count()->shouldBe(0);
+    }
+
     function it_can_be_initialized_with_items()
     {
         $items = range(1, 10);

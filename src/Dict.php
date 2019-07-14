@@ -4,14 +4,18 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class Dict
-    implements IteratorAggregate, Countable
+class Dict implements IteratorAggregate, Countable
 {
     private $items;
 
     public function __construct(array $items = [])
     {
         $this->items = $items;
+    }
+
+    public static function empty(): Dict
+    {
+        return new static;
     }
 
     public function has(string $key): bool

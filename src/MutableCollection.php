@@ -14,6 +14,11 @@ class MutableCollection implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
+    public static function empty(): MutableCollection
+    {
+        return new static;
+    }
+
     public static function list(...$items): MutableCollection
     {
         return new static($items);

@@ -10,6 +10,12 @@ class MutableDictSpec extends ObjectBehavior
         $this->shouldHaveType(MutableDict::class);
     }
 
+    function it_can_be_initialized_as_an_empty_dictionary()
+    {
+        $this->beConstructedThrough('empty', []);
+        $this->count()->shouldBe(0);
+    }
+
     function it_can_be_constructed_with_an_associative_array_of_items()
     {
         $this->beConstructedWith(['hats' => 'cats']);
@@ -106,8 +112,12 @@ class MutableDictSpec extends ObjectBehavior
         ]);
 
         foreach ($this->getWrappedObject() as $key => $value) {
-            if ($key == 'dogs') expect($value)->shouldBe('flavor');
-            if ($key == 'cats') expect($value)->shouldBe('levers');
+            if ($key == 'dogs') {
+                expect($value)->shouldBe('flavor');
+            }
+            if ($key == 'cats') {
+                expect($value)->shouldBe('levers');
+            }
         }
     }
 }
