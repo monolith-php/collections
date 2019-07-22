@@ -116,7 +116,7 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $dict = $this->toDict();
+        $dict = $this->toDictionary();
 
         $dict->shouldHaveType(Dictionary::class);
 
