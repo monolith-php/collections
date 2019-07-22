@@ -1,13 +1,19 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\MutableDict;
+use Monolith\Collections\MutableDictionary;
 use PhpSpec\ObjectBehavior;
 
-class MutableDictSpec extends ObjectBehavior
+class MutableDictionarySpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(MutableDict::class);
+        $this->shouldHaveType(MutableDictionary::class);
+    }
+
+    function it_can_be_initialized_as_a_dictionary_of_items()
+    {
+        $this->beConstructedThrough('of', [[0 => 2]]);
+        $this->get(0)->shouldBe(2);
     }
 
     function it_can_be_initialized_as_an_empty_dictionary()
@@ -71,7 +77,7 @@ class MutableDictSpec extends ObjectBehavior
         $this->add('dogs', 'flavor');
         $this->add('cats', 'levers');
 
-        $this->merge(new MutableDict([
+        $this->merge(new MutableDictionary([
             'loops' => 'groove',
         ]));
 

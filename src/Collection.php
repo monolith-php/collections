@@ -15,6 +15,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         $this->items = $items;
     }
 
+    public static function of(array $items): Collection
+    {
+        return new static($items);
+    }
+
     public static function empty(): Collection
     {
         return new static;
@@ -114,9 +119,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $this->copy()->items;
     }
 
-    public function toDict(): Dict
+    public function toDict(): Dictionary
     {
-        return new Dict($this->toArray());
+        return new Dictionary($this->toArray());
     }
 
     public function copy(): Collection

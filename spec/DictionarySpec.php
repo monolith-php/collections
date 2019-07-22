@@ -1,13 +1,19 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\Dict;
+use Monolith\Collections\Dictionary;
 use PhpSpec\ObjectBehavior;
 
-class DictSpec extends ObjectBehavior
+class DictionarySpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(Dict::class);
+        $this->shouldHaveType(Dictionary::class);
+    }
+
+    function it_can_be_constructed_as_a_dictionary_of_items()
+    {
+        $this->beConstructedThrough('of', [[0 => 1]]);
+        $this->get(0)->shouldBe(1);
     }
 
     function it_can_be_constructed_as_an_empty_dictionary()
@@ -93,7 +99,7 @@ class DictSpec extends ObjectBehavior
             'cats' => 'levers',
         ]);
 
-        $newDict = $this->merge(new Dict([
+        $newDict = $this->merge(new Dictionary([
             'loops' => 'groove',
         ]));
 

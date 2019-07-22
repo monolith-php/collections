@@ -4,7 +4,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class MutableDict implements IteratorAggregate, Countable
+class MutableDictionary implements IteratorAggregate, Countable
 {
     private $items;
 
@@ -13,7 +13,12 @@ class MutableDict implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
-    public static function empty(): MutableDict
+    public static function of(array $associativeArray): MutableDictionary
+    {
+        return new static($associativeArray);
+    }
+
+    public static function empty(): MutableDictionary
     {
         return new static;
     }
@@ -48,7 +53,7 @@ class MutableDict implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function merge(MutableDict $that): void
+    public function merge(MutableDictionary $that): void
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -56,20 +61,19 @@ class MutableDict implements IteratorAggregate, Countable
         $this->items = array_merge($this->items, $that->items);
     }
 
-    public function copy(): MutableDict
+    public function copy(): MutableDictionary
     {
         return clone $this;
     }
-
 
     /**
      * Don't forget to return [$key=>$value] to maintain associativity.
      *
      * @param callable $f
-     * @return Dict
-     * @throws DictMapFunctionHasIncorrectReturnFormat
+     * @return Dictionary
+     * @throws DictionaryMapFunctionHasIncorrectReturnFormat
      */
-    public function map(callable $f): MutableDict
+    public function map(callable $f): MutableDictionary
     {
         $newItems = [];
 
@@ -80,16 +84,16 @@ class MutableDict implements IteratorAggregate, Countable
                 count($result) != 1 ||
                 ! is_array($result)
             ) {
-                throw new DictMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
+                throw new DictionaryMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
             }
 
             $newItems[key($result)] = $result[key($result)];
         }
 
-        return new MutableDict($newItems);
+        return new MutableDictionary($newItems);
     }
 
-    public function filter(?callable $f = null): MutableDict
+    public function filter(?callable $f = null): MutableDictionary
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }

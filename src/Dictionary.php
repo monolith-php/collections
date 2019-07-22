@@ -4,7 +4,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class Dict implements IteratorAggregate, Countable
+class Dictionary implements IteratorAggregate, Countable
 {
     private $items;
 
@@ -13,7 +13,12 @@ class Dict implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
-    public static function empty(): Dict
+    public static function of(array $associativeArray): Dictionary
+    {
+        return new static($associativeArray);
+    }
+
+    public static function empty(): Dictionary
     {
         return new static;
     }
@@ -23,7 +28,7 @@ class Dict implements IteratorAggregate, Countable
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): Dict
+    public function add(string $key, $value): Dictionary
     {
         $newItems = $this->items;
         $newItems[$key] = $value;
@@ -35,7 +40,7 @@ class Dict implements IteratorAggregate, Countable
         return isset($this->items[$key]) ? $this->items[$key] : null;
     }
 
-    public function remove(string $key): Dict
+    public function remove(string $key): Dictionary
     {
         $newItems = $this->items;
         unset($newItems[$key]);
@@ -62,7 +67,7 @@ class Dict implements IteratorAggregate, Countable
         return count($this->items);
     }
 
-    public function merge(Dict $that): Dict
+    public function merge(Dictionary $that): Dictionary
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -71,7 +76,7 @@ class Dict implements IteratorAggregate, Countable
         return new static($newItems);
     }
 
-    public function copy(): Dict
+    public function copy(): Dictionary
     {
         return clone $this;
     }
@@ -90,10 +95,10 @@ class Dict implements IteratorAggregate, Countable
      * Don't forget to return [$key=>$value] to maintain associativity.
      *
      * @param callable $f
-     * @return Dict
-     * @throws DictMapFunctionHasIncorrectReturnFormat
+     * @return Dictionary
+     * @throws DictionaryMapFunctionHasIncorrectReturnFormat
      */
-    public function map(callable $f): Dict
+    public function map(callable $f): Dictionary
     {
         $newItems = [];
 
@@ -104,7 +109,7 @@ class Dict implements IteratorAggregate, Countable
                 count($result) != 1 ||
                 ! is_array($result)
             ) {
-                throw new DictMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
+                throw new DictionaryMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
             }
 
             $newItems[key($result)] = $result[key($result)];
@@ -116,9 +121,9 @@ class Dict implements IteratorAggregate, Countable
     /**
      * The arguments to the callback function are in the order of VALUE, KEY
      * @param callable|null $f
-     * @return Dict
+     * @return Dictionary
      */
-    public function filter(?callable $f = null): Dict
+    public function filter(?callable $f = null): Dictionary
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }

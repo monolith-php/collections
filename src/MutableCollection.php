@@ -14,6 +14,11 @@ class MutableCollection implements IteratorAggregate, Countable
         $this->items = $items;
     }
 
+    public static function of(array $items): MutableCollection
+    {
+        return new static($items);
+    }
+
     public static function empty(): MutableCollection
     {
         return new static;
@@ -83,7 +88,7 @@ class MutableCollection implements IteratorAggregate, Countable
         return reset($this->items) ?: null;
     }
 
-    public function tail()
+    public function tail(): MutableCollection
     {
         return new static(array_slice($this->items, 1));
     }

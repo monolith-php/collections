@@ -2,7 +2,7 @@
 
 use Monolith\Collections\Collection;
 use Monolith\Collections\CollectionTypeError;
-use Monolith\Collections\Dict;
+use Monolith\Collections\Dictionary;
 use PhpSpec\ObjectBehavior;
 
 class CollectionSpec extends ObjectBehavior
@@ -10,6 +10,12 @@ class CollectionSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(Collection::class);
+    }
+
+    function it_can_be_initialized_as_a_collection_of_items()
+    {
+        $this->beConstructedThrough('of', [[1, 2, 3]]);
+        $this->count()->shouldBe(3);
     }
 
     function it_can_be_initialized_with_items()
@@ -112,7 +118,7 @@ class CollectionSpec extends ObjectBehavior
 
         $dict = $this->toDict();
 
-        $dict->shouldHaveType(Dict::class);
+        $dict->shouldHaveType(Dictionary::class);
 
         $dict->toArray()->shouldBe([
             0 => 1,

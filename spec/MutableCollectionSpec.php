@@ -17,6 +17,12 @@ class MutableCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(0);
     }
 
+    function it_can_be_initialized_as_a_collection_of_items()
+    {
+        $this->beConstructedThrough('of', [[1, 2, 3]]);
+        $this->count()->shouldBe(3);
+    }
+
     function it_can_be_initialized_with_items()
     {
         $items = range(1, 10);
@@ -36,6 +42,11 @@ class MutableCollectionSpec extends ObjectBehavior
         $this->add('cats');
         $this->add('dogs');
         $this->count()->shouldBe(3);
+    }
+
+    public static function of(array $items)
+    {
+        return new static($items);
     }
 
     function it_can_add_items_to_the_collection()
