@@ -120,4 +120,60 @@ class MutableDictSpec extends ObjectBehavior
             }
         }
     }
+
+    function it_can_apply_a_function_to_each_item_and_return_a_new_dict_with_the_results()
+    {
+        $this->beConstructedWith([
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
+
+        $mapped = $this->map(function ($number, $letter) {
+            return [++$letter => $number + 1];
+        });
+
+        $mapped->toArray()->shouldBe([
+            'b' => 2,
+            'c' => 3,
+            'd' => 4,
+        ]);
+    }
+
+    function it_can_filter_values_based_on_a_fitness_function()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $filtered = $this->filter(function ($value, $key) {
+            return $value != 2;
+        });
+
+        $filtered->toArray()->shouldBe([
+            'a' => 1,
+            'c' => 3,
+        ]);
+    }
+
+    function it_can_filter_keys_based_on_a_fitness_function()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $filtered = $this->filter(function ($value, $key) {
+            return $key != 'a';
+        });
+
+        $filtered->toArray()->shouldBe([
+            'b' => 2,
+            'c' => 3,
+        ]);
+    }
 }

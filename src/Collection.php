@@ -82,9 +82,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(callable $f): Collection
+    public function filter(?callable $f = null): Collection
     {
-        return new static(array_filter($this->items, $f));
+        return is_null($f)
+            ? new static(array_values(array_filter($this->items)))
+            : new static(array_values(array_filter($this->items, $f)));
     }
 
     public function first(callable $f)
@@ -102,7 +104,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return reset($this->items) ?: null;
     }
 
-    public function tail()
+    public function tail(): Collection
     {
         return new static(array_slice($this->items, 1));
     }

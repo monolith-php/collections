@@ -121,6 +121,26 @@ class CollectionSpec extends ObjectBehavior
         ]);
     }
 
+    function it_can_filter_a_collection_based_on_a_fitness_function()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+        $filtered = $this->filter(function ($num) {
+            return $num != 2;
+        });
+        $filtered->toArray()->shouldBe([1, 3]);
+    }
+
+    function it_can_filter_empty_values_out_of_the_collection()
+    {
+        $this->beConstructedWith([1, null, 3]);
+
+        $this->toArray()->shouldBe([1, null, 3]);
+
+        $filtered = $this->filter();
+
+        $filtered->toArray()->shouldBe([1, 3]);
+    }
+
     function it_can_return_the_first_item_in_the_collection()
     {
         $this->beConstructedWith([1, 2, 3]);

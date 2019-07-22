@@ -170,11 +170,10 @@ class DictSpec extends ObjectBehavior
     function it_can_output_collections_containing_only_keys()
     {
         $this->beConstructedWith([
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
-            ]
-        );
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
 
         $this->keys()->toArray()->shouldBe([
             'a',
@@ -196,6 +195,42 @@ class DictSpec extends ObjectBehavior
             1,
             2,
             3,
+        ]);
+    }
+
+    function it_can_filter_values_based_on_a_fitness_function()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $filtered = $this->filter(function ($value, $key) {
+            return $value != 2;
+        });
+
+        $filtered->toArray()->shouldBe([
+            'a' => 1,
+            'c' => 3,
+        ]);
+    }
+
+    function it_can_filter_keys_based_on_a_fitness_function()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $filtered = $this->filter(function ($value, $key) {
+            return $key != 'a';
+        });
+
+        $filtered->toArray()->shouldBe([
+            'b' => 2,
+            'c' => 3,
         ]);
     }
 }

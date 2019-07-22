@@ -113,6 +113,17 @@ class Dict implements IteratorAggregate, Countable
         return new static($newItems);
     }
 
+    /**
+     * The arguments to the callback function are in the order of VALUE, KEY
+     * @param callable|null $f
+     * @return Dict
+     */
+    public function filter(?callable $f = null): Dict
+    {
+        return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
+    }
+
+
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);

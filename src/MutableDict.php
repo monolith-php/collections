@@ -61,6 +61,39 @@ class MutableDict implements IteratorAggregate, Countable
         return clone $this;
     }
 
+
+    /**
+     * Don't forget to return [$key=>$value] to maintain associativity.
+     *
+     * @param callable $f
+     * @return Dict
+     * @throws DictMapFunctionHasIncorrectReturnFormat
+     */
+    public function map(callable $f): MutableDict
+    {
+        $newItems = [];
+
+        foreach ($this->items as $key => $value) {
+            $result = $f($value, $key);
+
+            if (
+                count($result) != 1 ||
+                ! is_array($result)
+            ) {
+                throw new DictMapFunctionHasIncorrectReturnFormat("When calling `map` on a Dict the function must always use this format: return [key=>value]. Received " . json_encode($result) . " instead.");
+            }
+
+            $newItems[key($result)] = $result[key($result)];
+        }
+
+        return new MutableDict($newItems);
+    }
+
+    public function filter(?callable $f = null): MutableDict
+    {
+        return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
+    }
+
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);

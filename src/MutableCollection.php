@@ -61,9 +61,11 @@ class MutableCollection implements IteratorAggregate, Countable
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(callable $f)
+    public function filter(?callable $f = null): MutableCollection
     {
-        $this->items = array_filter($this->items, $f);
+        return is_null($f)
+            ? new static(array_values(array_filter($this->items)))
+            : new static(array_values(array_filter($this->items, $f)));
     }
 
     public function first(callable $f)
