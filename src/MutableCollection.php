@@ -93,11 +93,6 @@ class MutableCollection implements IteratorAggregate, Countable
         return new static(array_slice($this->items, 1));
     }
 
-    public function toArray(): array
-    {
-        return $this->items;
-    }
-
     public function copy(): MutableCollection
     {
         return clone $this;
@@ -110,6 +105,11 @@ class MutableCollection implements IteratorAggregate, Countable
         }
 
         $this->items = array_merge($this->items, $that->toArray());
+    }
+
+    public function toArray(): array
+    {
+        return $this->items;
     }
 
     public function reverse()

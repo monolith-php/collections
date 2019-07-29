@@ -335,4 +335,19 @@ class CollectionSpec extends ObjectBehavior
             'f',
         ]);
     }
+
+    function it_can_remove_duplicate_items()
+    {
+        $this->beConstructedWith([1, 2, 2, 4]);
+        $this->unique()->toArray()->shouldBe([1, 2, 4]);
+    }
+
+    function it_can_remove_duplicate_items_based_on_a_hash_function()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $this->unique(function ($item) {
+            return $item % 2;
+        })->toArray()->shouldBe([3, 4]);
+    }
 }

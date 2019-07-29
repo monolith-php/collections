@@ -239,4 +239,19 @@ class DictionarySpec extends ObjectBehavior
             'c' => 3,
         ]);
     }
+
+    function it_can_dump_keys_and_return_a_collection()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $this->toCollection()->toArray()->shouldBe([
+            0 => 1,
+            1 => 2,
+            2 => 3,
+        ]);
+    }
 }

@@ -133,4 +133,9 @@ class Dictionary implements IteratorAggregate, Countable
     {
         return new ArrayIterator($this->items);
     }
+
+    public function toCollection(): Collection
+    {
+        return new Collection(array_values($this->items));
+    }
 }

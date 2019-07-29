@@ -4,6 +4,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use function spec\Monolith\Collections\dd;
 
 class Collection implements IteratorAggregate, Countable, ArrayAccess
 {
@@ -28,11 +29,6 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
     public static function list(...$items): Collection
     {
         return new static($items);
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
     }
 
     public function add($item): Collection
@@ -70,6 +66,21 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         }
 
         return true;
+    }
+
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
+    public function toArray(): array
+    {
+        return $this->copy()->items;
+    }
+
+    public function copy(): Collection
+    {
+        return clone $this;
     }
 
     public function map(callable $f): Collection
@@ -114,19 +125,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static(array_slice($this->items, 1));
     }
 
-    public function toArray(): array
-    {
-        return $this->copy()->items;
-    }
-
     public function toDictionary(): Dictionary
     {
         return new Dictionary($this->toArray());
-    }
-
-    public function copy(): Collection
-    {
-        return clone $this;
     }
 
     public function merge(Collection $that): Collection
@@ -217,5 +218,21 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static(
             array_map(null, $this->items, $that->items)
         );
+    }
+
+    public function unique(?callable $f = null)
+    {
+        if (is_null($f)) {
+            return new static(array_values(array_unique($this->items)));
+        }
+
+        $hashTable = new MutableDictionary();
+
+        $this->each(function($item) use ($hashTable, $f) {
+            $hash = $f($item);
+            $hashTable->add($hash, $item);
+        });
+
+        return $hashTable->toCollection();
     }
 }

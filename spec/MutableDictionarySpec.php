@@ -182,4 +182,19 @@ class MutableDictionarySpec extends ObjectBehavior
             'c' => 3,
         ]);
     }
+
+    function it_can_drop_keys_and_be_cast_to_a_collection()
+    {
+        $this->beConstructedWith([
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ]);
+
+        $this->toCollection()->toArray()->shouldBe([
+            0 => 1,
+            1 => 2,
+            2 => 3,
+        ]);
+    }
 }
