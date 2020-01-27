@@ -1,10 +1,11 @@
 <?php namespace Monolith\Collections;
 
+use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 
-class Dictionary implements IteratorAggregate, Countable
+class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 {
     private $items;
 
@@ -137,5 +138,35 @@ class Dictionary implements IteratorAggregate, Countable
     public function toCollection(): Collection
     {
         return new Collection(array_values($this->items));
+    }
+
+    # Array Access
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
     }
 }

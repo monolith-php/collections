@@ -286,4 +286,23 @@ class DictionarySpec extends ObjectBehavior
         $newDict = SubtypedDictionaryStub::of([]);
         expect($newDict)->shouldHaveType(SubtypedDictionaryStub::class);
     }
+
+    function it_provides_php_array_access()
+    {
+        $this->beConstructedWith([1 => 2, 3 => 4]);
+
+        # offset get
+        $this[1]->shouldBe(2);
+
+        # offset exists
+        $dict = $this->getWrappedObject();
+
+        expect(
+            isset($dict[1])
+        )->shouldBe(true);
+
+        expect(
+            isset($dict[100])
+        )->shouldBe(false);
+    }
 }
