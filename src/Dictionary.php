@@ -103,7 +103,7 @@ class Dictionary implements IteratorAggregate, Countable
         $newItems = [];
 
         foreach ($this->items as $key => $value) {
-            $result = $f($value, $key);
+            $result = $f($key, $value);
 
             if (
                 count($result) != 1 ||

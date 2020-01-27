@@ -1,9 +1,10 @@
 <?php namespace spec\Monolith\Collections;
 
+use PhpSpec\ObjectBehavior;
+use Monolith\Collections\Dictionary;
 use Monolith\Collections\Collection;
 use Monolith\Collections\CollectionTypeError;
-use Monolith\Collections\Dictionary;
-use PhpSpec\ObjectBehavior;
+use spec\Monolith\Collections\Stubs\CollectionStub;
 
 class CollectionSpec extends ObjectBehavior
 {

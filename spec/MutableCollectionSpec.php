@@ -1,8 +1,9 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\CollectionTypeError;
-use Monolith\Collections\MutableCollection;
 use PhpSpec\ObjectBehavior;
+use Monolith\Collections\MutableCollection;
+use Monolith\Collections\CollectionTypeError;
+use spec\Monolith\Collections\Stubs\MutableCollectionStub;
 
 class MutableCollectionSpec extends ObjectBehavior
 {

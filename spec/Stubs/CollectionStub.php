@@ -1,4 +1,4 @@
-<?php namespace spec\Monolith\Collections;
+<?php namespace spec\Monolith\Collections\Stubs;
 
 use Monolith\Collections\Collection;
 

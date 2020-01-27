@@ -1,9 +1,9 @@
 <?php namespace spec\Monolith\Collections;
 
+use PhpSpec\ObjectBehavior;
 use Monolith\Collections\Collection;
 use Monolith\Collections\CollectionTypeError;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use spec\Monolith\Collections\Stubs\SpecificTypeStub;
 
 class TypedCollectionSpec extends ObjectBehavior {
 
