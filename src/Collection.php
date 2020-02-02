@@ -130,7 +130,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new Dictionary($this->toArray());
     }
 
-    public function merge(Collection $that): Collection
+    // would love to have a 'stotic' return type but we'll have to wait
+    // until php 8
+    public function merge(Collection $that)
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
