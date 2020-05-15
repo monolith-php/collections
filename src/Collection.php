@@ -220,9 +220,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         throw new CannotWriteToImmutableCollectionUsingArrayAccess();
     }
 
-    public function zip(Collection $that)
+    public function zip(Collection $that): Dictionary
     {
-        return new static(
+        return new Dictionary(
             array_map(null, $this->items, $that->items)
         );
     }

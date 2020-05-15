@@ -292,11 +292,13 @@ class CollectionSpec extends ObjectBehavior
         )->shouldBe(false);
     }
 
-    function it_can_zip_two_collections()
+    function it_can_zip_two_collections_into_a_dictionary()
     {
         $this->beConstructedWith([1, 2, 3, 4]);
 
         $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd']));
+        
+        $zipped->shouldBeAnInstanceOf(Dictionary::class);
 
         $zipped[0]->shouldBe([
             1,
