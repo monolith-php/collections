@@ -102,6 +102,17 @@ class CollectionSpec extends ObjectBehavior
         $mapped->equals(new Collection([2, 3, 4]))->shouldBe(true);
     }
 
+    function it_can_apply_a_function_to_each_item_supplying_the_key_and_return_a_new_collection_with_the_results()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+
+        $mapped = $this->mapWithIndex(function ($index, $item) {
+            return $item + $index;
+        });
+
+        $mapped->equals(new Collection([1, 3, 5]))->shouldBe(true);
+    }
+
     function it_can_apply_a_function_to_each_item_and_return_a_single_value_reduction()
     {
         $this->beConstructedWith([1, 2, 3]);
