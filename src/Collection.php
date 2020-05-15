@@ -88,9 +88,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static(array_map($f, $this->items));
     }
 
-    public function mapWithIndex(callable $f): Collection
+    public function mapKeyValues(callable $f): Collection
     {
-        return new static(array_map($f, $this->items, array_keys($this->items)));
+        return new static(array_map($f, array_keys($this->items), $this->items));
     }
 
     public function flatMap(callable $f): Collection

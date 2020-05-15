@@ -106,11 +106,11 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $mapped = $this->mapWithIndex(function ($index, $item) {
-            return $item + $index;
+        $mapped = $this->mapKeyValues(function ($index, $item) {
+            return $item - $index;
         });
 
-        $mapped->equals(new Collection([1, 3, 5]))->shouldBe(true);
+        $mapped->equals(new Collection([1, 1, 1]))->shouldBe(true);
     }
 
     function it_can_apply_a_function_to_each_item_and_return_a_single_value_reduction()
