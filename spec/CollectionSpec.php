@@ -60,9 +60,11 @@ class CollectionSpec extends ObjectBehavior
         $i = 0;
         $collection = $this->add(1)->add(3)->add(5);
 
-        $collection->each(function ($item) use (&$i) {
-            $i += $item;
-        });
+        $collection->each(
+            function ($item) use (&$i) {
+                $i += $item;
+            }
+        );
 
         expect($i)->shouldBe(9);
     }
@@ -71,9 +73,11 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $flatMap = $this->flatMap(function ($item) {
-            return [$item, $item + 10, $item + 20];
-        });
+        $flatMap = $this->flatMap(
+            function ($item) {
+                return [$item, $item + 10, $item + 20];
+            }
+        );
 
         $flatMap->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
     }
@@ -95,9 +99,11 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $mapped = $this->map(function ($item) {
-            return $item + 1;
-        });
+        $mapped = $this->map(
+            function ($item) {
+                return $item + 1;
+            }
+        );
 
         $mapped->equals(new Collection([2, 3, 4]))->shouldBe(true);
     }
@@ -106,9 +112,11 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $mapped = $this->mapKeyValues(function ($index, $item) {
-            return $item - $index;
-        });
+        $mapped = $this->mapKeyValues(
+            function ($index, $item) {
+                return $item - $index;
+            }
+        );
 
         $mapped->equals(new Collection([1, 1, 1]))->shouldBe(true);
     }
@@ -117,9 +125,11 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3]);
 
-        $reduced = $this->reduce(function ($item, $accumulation) {
-            return $item . ' ' . $accumulation;
-        }, '');
+        $reduced = $this->reduce(
+            function ($item, $accumulation) {
+                return $item . ' ' . $accumulation;
+            }, ''
+        );
 
         $reduced->shouldBe(' 1 2 3');
     }
@@ -132,19 +142,23 @@ class CollectionSpec extends ObjectBehavior
 
         $dict->shouldHaveType(Dictionary::class);
 
-        $dict->toArray()->shouldBe([
-            0 => 1,
-            1 => 2,
-            2 => 3,
-        ]);
+        $dict->toArray()->shouldBe(
+            [
+                0 => 1,
+                1 => 2,
+                2 => 3,
+            ]
+        );
     }
 
     function it_can_filter_a_collection_based_on_a_fitness_function()
     {
         $this->beConstructedWith([1, 2, 3]);
-        $filtered = $this->filter(function ($num) {
-            return $num != 2;
-        });
+        $filtered = $this->filter(
+            function ($num) {
+                return $num != 2;
+            }
+        );
         $filtered->toArray()->shouldBe([1, 3]);
     }
 
@@ -238,9 +252,11 @@ class CollectionSpec extends ObjectBehavior
     function it_can_return_the_first_item_matching_a_positive_callback_result()
     {
         $this->beConstructedWith([1, 2, 3]);
-        $item = $this->first(function ($item) {
-            return $item == 2;
-        });
+        $item = $this->first(
+            function ($item) {
+                return $item == 2;
+            }
+        );
         $item->shouldBe(2);
     }
 
@@ -252,17 +268,23 @@ class CollectionSpec extends ObjectBehavior
 
         $this->equals($different)->shouldBe(false);
 
-        $this->equals($different, function ($one, $two) {
+        $this->equals(
+            $different, function ($one, $two) {
             return true;
-        })->shouldBe(true);
+        }
+        )->shouldBe(true);
 
-        $this->equals($different, function ($one, $two) {
+        $this->equals(
+            $different, function ($one, $two) {
             return false;
-        })->shouldBe(false);
+        }
+        )->shouldBe(false);
 
-        $this->equals($different, function ($one, $two) {
+        $this->equals(
+            $different, function ($one, $two) {
             return $one == $two - 1;
-        })->shouldBe(true);
+        }
+        )->shouldBe(true);
     }
 
     function it_can_implode_scalar_items_with_a_delimiter()
@@ -292,33 +314,60 @@ class CollectionSpec extends ObjectBehavior
         )->shouldBe(false);
     }
 
+    function it_can_sort_a_collection_with_a_sort_function()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
+
+        $new = $this->sort(
+            function ($a, $b) {
+                if ($a > $b) {
+                    return -1;
+                }
+                if ($b > $a) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
+
+        $new->toArray()->shouldBe([4, 3, 2, 1]);
+    }
+
     function it_can_zip_two_collections_into_a_dictionary()
     {
         $this->beConstructedWith([1, 2, 3, 4]);
 
         $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd']));
-        
+
         $zipped->shouldBeAnInstanceOf(Dictionary::class);
 
-        $zipped[0]->shouldBe([
-            1,
-            'a',
-        ]);
+        $zipped[0]->shouldBe(
+            [
+                1,
+                'a',
+            ]
+        );
 
-        $zipped[1]->shouldBe([
-            2,
-            'b',
-        ]);
+        $zipped[1]->shouldBe(
+            [
+                2,
+                'b',
+            ]
+        );
 
-        $zipped[2]->shouldBe([
-            3,
-            'c',
-        ]);
+        $zipped[2]->shouldBe(
+            [
+                3,
+                'c',
+            ]
+        );
 
-        $zipped[3]->shouldBe([
-            4,
-            'd',
-        ]);
+        $zipped[3]->shouldBe(
+            [
+                4,
+                'd',
+            ]
+        );
     }
 
     function it_pads_the_shorter_of_two_zipped_collections_with_null()
@@ -327,27 +376,35 @@ class CollectionSpec extends ObjectBehavior
 
         $zipped = $this->zip(new Collection(['a', 'b']));
 
-        $zipped[2]->shouldBe([
-            3,
-            null,
-        ]);
+        $zipped[2]->shouldBe(
+            [
+                3,
+                null,
+            ]
+        );
 
-        $zipped[3]->shouldBe([
-            4,
-            null,
-        ]);
+        $zipped[3]->shouldBe(
+            [
+                4,
+                null,
+            ]
+        );
 
         $zipped = $this->zip(new Collection(['a', 'b', 'c', 'd', 'e', 'f']));
 
-        $zipped[4]->shouldBe([
-            null,
-            'e',
-        ]);
+        $zipped[4]->shouldBe(
+            [
+                null,
+                'e',
+            ]
+        );
 
-        $zipped[5]->shouldBe([
-            null,
-            'f',
-        ]);
+        $zipped[5]->shouldBe(
+            [
+                null,
+                'f',
+            ]
+        );
     }
 
     function it_can_remove_duplicate_items()
@@ -360,8 +417,10 @@ class CollectionSpec extends ObjectBehavior
     {
         $this->beConstructedWith([1, 2, 3, 4]);
 
-        $this->unique(function ($item) {
-            return $item % 2;
-        })->toArray()->shouldBe([3, 4]);
+        $this->unique(
+            function ($item) {
+                return $item % 2;
+            }
+        )->toArray()->shouldBe([3, 4]);
     }
 }

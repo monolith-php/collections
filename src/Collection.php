@@ -159,6 +159,12 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
     {
         return empty($this->items);
     }
+    
+    public function sort(?callable $f): self {
+        $items = $this->items;
+        usort($items, $f);
+        return Collection::of($items);
+    }
 
     /**
      * Concatenates string items with a delimiter.
