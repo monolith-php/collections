@@ -73,13 +73,15 @@ class DictionarySpec extends ObjectBehavior
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
 
         $this->toArray()->shouldBe(
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
     }
 
     function it_can_count_its_items()
@@ -88,7 +90,8 @@ class DictionarySpec extends ObjectBehavior
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
 
         $this->count()->shouldBe(2);
 
@@ -102,13 +105,16 @@ class DictionarySpec extends ObjectBehavior
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
 
         $newDict = $this->merge(
             new Dictionary(
                 [
                     'loops' => 'groove',
-                ]));
+                ]
+            )
+        );
 
         $this->get('loops')->shouldBe(null);
 
@@ -123,7 +129,8 @@ class DictionarySpec extends ObjectBehavior
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
 
         $newDict = $this->copy();
 
@@ -137,7 +144,8 @@ class DictionarySpec extends ObjectBehavior
             [
                 'dogs' => 'flavor',
                 'cats' => 'levers',
-            ]);
+            ]
+        );
 
         foreach ($this->getWrappedObject() as $key => $value) {
             if ($key == 'dogs') {
@@ -154,13 +162,15 @@ class DictionarySpec extends ObjectBehavior
         $this->beConstructedWith(
             [
                 'dogs' => 'flavor',
-            ]);
+            ]
+        );
 
         $this->each(
             function ($value, $key) {
                 expect($value)->shouldBe('flavor');
                 expect($key)->shouldBe('dogs');
-            });
+            }
+        );
     }
 
 
@@ -177,14 +187,36 @@ class DictionarySpec extends ObjectBehavior
         $mapped = $this->map(
             function ($letter, $number) {
                 return [++$letter => $number + 1];
-            });
+            }
+        );
 
         $mapped->toArray()->shouldBe(
             [
                 'b' => 2,
                 'c' => 3,
                 'd' => 4,
-            ]);
+            ]
+        );
+    }
+
+    function it_can_reduce_a_dictionary_to_a_value()
+    {
+        $this->beConstructedWith(
+            [
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
+
+        $value = $this->reduce(
+            function ($key, $value, $carry) {
+                return $carry . $key . $value;
+            },
+            'hi'
+        );
+        
+        $value->shouldBe('hia1b2c3');
     }
 
     function it_can_output_collections_containing_only_keys()
@@ -194,14 +226,16 @@ class DictionarySpec extends ObjectBehavior
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
-            ]);
+            ]
+        );
 
         $this->keys()->toArray()->shouldBe(
             [
                 'a',
                 'b',
                 'c',
-            ]);
+            ]
+        );
     }
 
     function it_can_output_collections_containing_only_values()
@@ -219,7 +253,8 @@ class DictionarySpec extends ObjectBehavior
                 1,
                 2,
                 3,
-            ]);
+            ]
+        );
     }
 
     function it_can_filter_values_based_on_a_fitness_function()
@@ -229,18 +264,21 @@ class DictionarySpec extends ObjectBehavior
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
-            ]);
+            ]
+        );
 
         $filtered = $this->filter(
             function ($value, $key) {
                 return $value != 2;
-            });
+            }
+        );
 
         $filtered->toArray()->shouldBe(
             [
                 'a' => 1,
                 'c' => 3,
-            ]);
+            ]
+        );
     }
 
     function it_can_filter_keys_based_on_a_fitness_function()
@@ -250,18 +288,21 @@ class DictionarySpec extends ObjectBehavior
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
-            ]);
+            ]
+        );
 
         $filtered = $this->filter(
             function ($value, $key) {
                 return $key != 'a';
-            });
+            }
+        );
 
         $filtered->toArray()->shouldBe(
             [
                 'b' => 2,
                 'c' => 3,
-            ]);
+            ]
+        );
     }
 
     function it_can_dump_keys_and_return_a_collection()
@@ -271,14 +312,16 @@ class DictionarySpec extends ObjectBehavior
                 'a' => 1,
                 'b' => 2,
                 'c' => 3,
-            ]);
+            ]
+        );
 
         $this->toCollection()->toArray()->shouldBe(
             [
                 0 => 1,
                 1 => 2,
                 2 => 3,
-            ]);
+            ]
+        );
     }
 
     function it_returns_subtyped_collections_from_factory_methods()

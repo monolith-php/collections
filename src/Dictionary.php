@@ -1,8 +1,8 @@
 <?php namespace Monolith\Collections;
 
+use Countable;
 use ArrayAccess;
 use ArrayIterator;
-use Countable;
 use IteratorAggregate;
 
 class Dictionary implements IteratorAggregate, Countable, ArrayAccess
@@ -12,16 +12,6 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     public function __construct(array $items = [])
     {
         $this->items = $items;
-    }
-
-    public static function of(array $associativeArray): Dictionary
-    {
-        return new static($associativeArray);
-    }
-
-    public static function empty(): Dictionary
-    {
-        return new static;
     }
 
     public function has(string $key): bool
@@ -120,6 +110,30 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
+     * Reduce function takes 3 arguments:
+     * 
+     * function ($key, $value, $carry) {
+    
+     * }
+     * 
+     * The value returned will be the carry during the next iteration.
+     * 
+     * @param callable $f
+     * @param $initialValue
+     * @return mixed
+     */
+    public function reduce(callable $f, $initialValue)
+    {
+        $carry = $initialValue;
+        
+        foreach ($this->items as $key => $value) {
+            $carry = $f($key, $value, $carry);
+        }
+        
+        return $carry;
+    }
+
+    /**
      * The arguments to the callback function are in the order of VALUE, KEY
      * @param callable|null $f
      * @return Dictionary
@@ -128,7 +142,6 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }
-
 
     public function getIterator(): ArrayIterator
     {
@@ -140,7 +153,6 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return new Collection(array_values($this->items));
     }
 
-    # Array Access
     public function offsetExists($offset)
     {
         return $this->has($offset);
@@ -153,6 +165,8 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         return $this->get($offset);
     }
+
+    # Array Access
 
     /**
      * @inheritDoc
@@ -168,5 +182,15 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     public function offsetUnset($offset)
     {
         throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
+    }
+
+    public static function of(array $associativeArray): Dictionary
+    {
+        return new static($associativeArray);
+    }
+
+    public static function empty(): Dictionary
+    {
+        return new static;
     }
 }
