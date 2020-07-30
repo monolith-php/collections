@@ -1,7 +1,7 @@
 <?php namespace Monolith\Collections;
 
-use ArrayIterator;
 use Countable;
+use ArrayIterator;
 use IteratorAggregate;
 
 class MutableCollection implements IteratorAggregate, Countable
@@ -12,21 +12,6 @@ class MutableCollection implements IteratorAggregate, Countable
     public function __construct(array $items = [])
     {
         $this->items = $items;
-    }
-
-    public static function of(array $items): MutableCollection
-    {
-        return new static($items);
-    }
-
-    public static function empty(): MutableCollection
-    {
-        return new static;
-    }
-
-    public static function list(...$items): MutableCollection
-    {
-        return new static($items);
     }
 
     public function count(): int
@@ -134,8 +119,29 @@ class MutableCollection implements IteratorAggregate, Countable
         return empty($this->items);
     }
 
+    public function sort(?callable $f): self
+    {
+        usort($this->items, $f);
+        return $this;
+    }
+
     public function toCollection()
     {
         return new Collection($this->items);
+    }
+
+    public static function of(array $items): MutableCollection
+    {
+        return new static($items);
+    }
+
+    public static function empty(): MutableCollection
+    {
+        return new static;
+    }
+
+    public static function list(...$items): MutableCollection
+    {
+        return new static($items);
     }
 }

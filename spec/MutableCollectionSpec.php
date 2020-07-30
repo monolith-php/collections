@@ -115,7 +115,26 @@ class MutableCollectionSpec extends ObjectBehavior
 
         $reduced->shouldBe(' 1 2 3');
     }
+    
+    function it_can_sort_a_collection_with_a_sort_function()
+    {
+        $this->beConstructedWith([1, 2, 3, 4]);
 
+        $new = $this->sort(
+            function ($a, $b) {
+                if ($a > $b) {
+                    return -1;
+                }
+                if ($b > $a) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
+
+        $new->toArray()->shouldBe([4, 3, 2, 1]);
+    }
+    
     function it_can_return_the_first_item_in_the_collection()
     {
         $this->beConstructedWith([1, 2, 3]);
