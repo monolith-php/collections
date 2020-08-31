@@ -147,6 +147,12 @@ class MutableCollectionSpec extends ObjectBehavior
         $this->head()->shouldBe(null);
     }
 
+    function it_returns_zero_when_returning_the_first_item_of_an_empty_collection()
+    {
+        $this->beConstructedWith([0]);
+        $this->head()->shouldBe(0);
+    }
+    
     function it_can_return_a_collection_of_all_but_the_first_item_in_the_collection()
     {
         $this->beConstructedWith([1, 2, 3]);

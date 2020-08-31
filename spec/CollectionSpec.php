@@ -47,6 +47,7 @@ class CollectionSpec extends ObjectBehavior
     function it_can_add_items_to_the_collection()
     {
         $this->add(1)->head()->shouldBe(1);
+        $this->add(0)->head()->shouldBe(0);
     }
 
     function it_can_not_be_mutated_when_adding_items_to_the_collection()

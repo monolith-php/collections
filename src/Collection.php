@@ -122,7 +122,12 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
 
     public function head()
     {
-        return reset($this->items) ?: null;
+        $value = reset($this->items);
+        
+        if (false === $value) {
+            return null;
+        }
+        return $value;
     }
 
     public function tail(): Collection
