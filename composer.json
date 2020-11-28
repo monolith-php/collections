@@ -1,38 +1,32 @@
 {
-    "name": "monolith/collections",
-    "description": "Collection classes for the Monolith framework.",
-    "keywords": [
-        "monolith",
-        "collections"
-    ],
-    "authors": [
-        {
-            "name": "Shawn McCool",
-            "email": "shawn@heybigname.com"
-        }
-    ],
-    "require": {
-        "php": "^7.4"
+  "name": "monolith/collections",
+  "description": "Collection classes for the Monolith framework.",
+  "keywords": [
+    "monolith",
+    "collections"
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpspec/phpspec": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Monolith\\Collections\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "spec\\Monolith\\Collections\\": "spec/"
     },
-    "require-dev": {
-        "phpspec/phpspec": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "Monolith\\Collections\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "spec\\Monolith\\Collections\\": "spec/"
-        },
-        "files": [
-            "spec/functions.php"
-        ]
-    },
-    "config": {
-        "sort-packages": true,
-        "bin-dir": "bin"
-    },
-    "minimum-stability": "dev"
+    "files": [
+      "spec/functions.php"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "bin-dir": "bin"
+  },
+  "minimum-stability": "dev"
 }
