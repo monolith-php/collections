@@ -16,19 +16,9 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         $this->items = $items;
     }
 
-    public static function of(array $items): Collection
+    public function contains($value): bool
     {
-        return new static($items);
-    }
-
-    public static function empty(): Collection
-    {
-        return new static;
-    }
-
-    public static function list(...$items): Collection
-    {
-        return new static($items);
+        return in_array($value, $this->items);
     }
 
     public function add($item): Collection
@@ -123,7 +113,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
     public function head()
     {
         $value = reset($this->items);
-        
+
         if (false === $value) {
             return null;
         }
@@ -140,8 +130,6 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new Dictionary($this->toArray());
     }
 
-    // would love to have a 'stotic' return type but we'll have to wait
-    // until php 8
     public function merge(Collection $that)
     {
         if (get_class($this) !== get_class($that)) {
@@ -160,12 +148,16 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new ArrayIterator($this->items);
     }
 
+    // would love to have a 'stotic' return type but we'll have to wait
+    // until php 8
+
     public function isEmpty(): bool
     {
         return empty($this->items);
     }
-    
-    public function sort(?callable $f): self {
+
+    public function sort(?callable $f): self
+    {
         $items = $this->items;
         usort($items, $f);
         return Collection::of($items);
@@ -246,11 +238,28 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
 
         $hashTable = new MutableDictionary();
 
-        $this->each(function($item) use ($hashTable, $f) {
-            $hash = $f($item);
-            $hashTable->add($hash, $item);
-        });
+        $this->each(
+            function ($item) use ($hashTable, $f) {
+                $hash = $f($item);
+                $hashTable->add($hash, $item);
+            }
+        );
 
         return $hashTable->toCollection();
+    }
+
+    public static function of(array $items): Collection
+    {
+        return new static($items);
+    }
+
+    public static function empty(): Collection
+    {
+        return new static;
+    }
+
+    public static function list(...$items): Collection
+    {
+        return new static($items);
     }
 }

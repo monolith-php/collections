@@ -44,6 +44,13 @@ class CollectionSpec extends ObjectBehavior
         $collection->count()->shouldBe(3);
     }
 
+    function it_can_tell_if_it_contains_a_value()
+    {
+        $collection = $this->add('dog');
+        $collection->contains('cat')->shouldBe(false);
+        $collection->contains('dog')->shouldBe(true);
+    }
+
     function it_can_add_items_to_the_collection()
     {
         $this->add(1)->head()->shouldBe(1);
