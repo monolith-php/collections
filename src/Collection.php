@@ -83,6 +83,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static(array_map($f, array_keys($this->items), $this->items));
     }
 
+    public function flatten(): Collection
+    {
+        return new static(array_merge(...array_map(fn($x) => $x, $this->items)));
+    }
+    
     public function flatMap(callable $f): Collection
     {
         return new static(array_merge(...array_map($f, $this->items)));

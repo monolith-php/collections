@@ -90,6 +90,19 @@ class CollectionSpec extends ObjectBehavior
         $flatMap->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
     }
 
+    function it_can_flatten_the_contents()
+    {
+        $this->beConstructedWith([1, 2, 3]);
+
+        $structure = $this->map(
+            function ($item) {
+                return [$item, $item + 10, $item + 20];
+            }
+        )->flatten();
+        
+        $structure->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
+    }
+    
     function it_can_compare_two_collections_by_their_contents_with_contravariance()
     {
         $this->beConstructedWith([1, 2, 3]);

@@ -9,7 +9,7 @@
     "php": ">=7.4"
   },
   "require-dev": {
-    "phpspec/phpspec": "dev-master"
+    "phpspec/phpspec": "dev-main"
   },
   "autoload": {
     "psr-4": {
