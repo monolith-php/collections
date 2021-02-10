@@ -1,19 +1,16 @@
 <?php namespace Monolith\Collections;
 
+use Countable;
 use ArrayAccess;
 use ArrayIterator;
-use Countable;
 use IteratorAggregate;
-use function spec\Monolith\Collections\dd;
+use JetBrains\PhpStorm\Pure;
 
 class Collection implements IteratorAggregate, Countable, ArrayAccess
 {
-    /** @var array */
-    protected $items;
-
-    public function __construct(array $items = [])
-    {
-        $this->items = $items;
+    public function __construct(
+        protected array $items = []
+    ) {
     }
 
     public function contains($value): bool
@@ -21,7 +18,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return in_array($value, $this->items);
     }
 
-    public function add($item): Collection
+    public function add($item): static
     {
         $items = $this->items;
         $items[] = $item;
@@ -68,27 +65,27 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $this->copy()->items;
     }
 
-    public function copy(): Collection
+    public function copy(): static
     {
         return clone $this;
     }
 
-    public function map(callable $f): Collection
+    public function map(callable $f): static
     {
         return new static(array_map($f, $this->items));
     }
 
-    public function mapKeyValues(callable $f): Collection
+    public function mapKeyValues(callable $f): static
     {
         return new static(array_map($f, array_keys($this->items), $this->items));
     }
 
-    public function flatten(): Collection
+    public function flatten(): static
     {
         return new static(array_merge(...array_map(fn($x) => $x, $this->items)));
     }
-    
-    public function flatMap(callable $f): Collection
+
+    public function flatMap(callable $f): static
     {
         return new static(array_merge(...array_map($f, $this->items)));
     }
@@ -98,7 +95,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(?callable $f = null): Collection
+    public function filter(?callable $f = null): static
     {
         return is_null($f)
             ? new static(array_values(array_filter($this->items)))
@@ -125,7 +122,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $value;
     }
 
-    public function tail(): Collection
+    public function tail(): static
     {
         return new static(array_slice($this->items, 1));
     }
@@ -135,7 +132,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new Dictionary($this->toArray());
     }
 
-    public function merge(Collection $that)
+    public function merge(Collection $that): static
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -143,7 +140,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static(array_merge($this->items, $that->items));
     }
 
-    public function reverse(): Collection
+    public function reverse(): static
     {
         return new static(array_reverse($this->items));
     }
@@ -153,19 +150,16 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new ArrayIterator($this->items);
     }
 
-    // would love to have a 'stotic' return type but we'll have to wait
-    // until php 8
-
     public function isEmpty(): bool
     {
         return empty($this->items);
     }
 
-    public function sort(?callable $f): self
+    public function sort(?callable $f): static
     {
         $items = $this->items;
         usort($items, $f);
-        return Collection::of($items);
+        return static::of($items);
     }
 
     /**
@@ -253,17 +247,17 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $hashTable->toCollection();
     }
 
-    public static function of(array $items): Collection
+    public static function of(array $items): static
     {
         return new static($items);
     }
 
-    public static function empty(): Collection
+    public static function empty(): static
     {
         return new static;
     }
 
-    public static function list(...$items): Collection
+    public static function list(...$items): static
     {
         return new static($items);
     }

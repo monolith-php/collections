@@ -5,5 +5,5 @@ use spec\Monolith\Collections\Stubs\SpecificTypeStub;
 
 final class TestTypedCollection extends TypedCollection
 {
-    protected $collectionType = SpecificTypeStub::class;
+    protected string $collectionType = SpecificTypeStub::class;
 }

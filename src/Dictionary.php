@@ -7,11 +7,9 @@ use IteratorAggregate;
 
 class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 {
-    private $items;
-
-    public function __construct(array $items = [])
-    {
-        $this->items = $items;
+    public function __construct(
+        protected array $items = []
+    ) {
     }
 
     public function has(string $key): bool
@@ -19,7 +17,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): Dictionary
+    public function add(string $key, $value): static
     {
         $newItems = $this->items;
         $newItems[$key] = $value;
@@ -28,10 +26,10 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 
     public function get(string $key)
     {
-        return isset($this->items[$key]) ? $this->items[$key] : null;
+        return $this->items[$key] ?? null;
     }
 
-    public function remove(string $key): Dictionary
+    public function remove(string $key): static
     {
         $newItems = $this->items;
         unset($newItems[$key]);
@@ -58,7 +56,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return count($this->items);
     }
 
-    public function merge(Dictionary $that): Dictionary
+    public function merge(Dictionary $that): static
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
@@ -67,7 +65,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return new static($newItems);
     }
 
-    public function copy(): Dictionary
+    public function copy(): static
     {
         return clone $this;
     }
@@ -89,7 +87,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
      * @return Dictionary
      * @throws DictionaryMapFunctionHasIncorrectReturnFormat
      */
-    public function map(callable $f): Dictionary
+    public function map(callable $f): static
     {
         $newItems = [];
 
@@ -111,13 +109,12 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 
     /**
      * Reduce function takes 3 arguments:
-     * 
+     *
      * function ($key, $value, $carry) {
-    
      * }
-     * 
+     *
      * The value returned will be the carry during the next iteration.
-     * 
+     *
      * @param callable $f
      * @param $initialValue
      * @return mixed
@@ -125,11 +122,11 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     public function reduce(callable $f, $initialValue)
     {
         $carry = $initialValue;
-        
+
         foreach ($this->items as $key => $value) {
             $carry = $f($key, $value, $carry);
         }
-        
+
         return $carry;
     }
 
@@ -138,7 +135,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
      * @param callable|null $f
      * @return Dictionary
      */
-    public function filter(?callable $f = null): Dictionary
+    public function filter(?callable $f = null): static
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }
@@ -184,12 +181,12 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
     }
 
-    public static function of(array $associativeArray): Dictionary
+    public static function of(array $associativeArray): static
     {
         return new static($associativeArray);
     }
 
-    public static function empty(): Dictionary
+    public static function empty(): static
     {
         return new static;
     }

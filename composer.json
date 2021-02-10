@@ -6,10 +6,10 @@
     "collections"
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=8"
   },
   "require-dev": {
-    "phpspec/phpspec": "dev-main"
+    "phpspec/phpspec": "^7"
   },
   "autoload": {
     "psr-4": {

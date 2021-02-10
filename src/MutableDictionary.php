@@ -1,26 +1,14 @@
 <?php namespace Monolith\Collections;
 
-use ArrayIterator;
 use Countable;
+use ArrayIterator;
 use IteratorAggregate;
 
 class MutableDictionary implements IteratorAggregate, Countable
 {
-    private $items;
-
-    public function __construct(array $items = [])
-    {
-        $this->items = $items;
-    }
-
-    public static function of(array $associativeArray): MutableDictionary
-    {
-        return new static($associativeArray);
-    }
-
-    public static function empty(): MutableDictionary
-    {
-        return new static;
+    public function __construct(
+        private array $items = []
+    ) {
     }
 
     public function has(string $key): bool
@@ -35,7 +23,7 @@ class MutableDictionary implements IteratorAggregate, Countable
 
     public function get(string $key)
     {
-        return isset($this->items[$key]) ? $this->items[$key] : null;
+        return $this->items[$key] ?? null;
     }
 
     public function remove(string $key): void
@@ -61,7 +49,7 @@ class MutableDictionary implements IteratorAggregate, Countable
         $this->items = array_merge($this->items, $that->items);
     }
 
-    public function copy(): MutableDictionary
+    public function copy(): static
     {
         return clone $this;
     }
@@ -73,7 +61,7 @@ class MutableDictionary implements IteratorAggregate, Countable
      * @return Dictionary
      * @throws DictionaryMapFunctionHasIncorrectReturnFormat
      */
-    public function map(callable $f): MutableDictionary
+    public function map(callable $f): static
     {
         $newItems = [];
 
@@ -93,9 +81,11 @@ class MutableDictionary implements IteratorAggregate, Countable
         return new MutableDictionary($newItems);
     }
 
-    public function filter(?callable $f = null): MutableDictionary
+    public function filter(?callable $f = null): static
     {
-        return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
+        return new static(
+            array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH)
+        );
     }
 
     public function getIterator(): ArrayIterator
@@ -106,5 +96,15 @@ class MutableDictionary implements IteratorAggregate, Countable
     public function toCollection(): Collection
     {
         return new Collection(array_values($this->items));
+    }
+
+    public static function of(array $associativeArray): static
+    {
+        return new static($associativeArray);
+    }
+
+    public static function empty(): static
+    {
+        return new static;
     }
 }

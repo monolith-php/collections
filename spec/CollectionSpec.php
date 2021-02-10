@@ -65,16 +65,19 @@ class CollectionSpec extends ObjectBehavior
 
     function it_can_apply_a_function_to_each_item()
     {
-        $i = 0;
+        $i = new class {
+            public int $number= 0;
+        };
+        
         $collection = $this->add(1)->add(3)->add(5);
 
         $collection->each(
-            function ($item) use (&$i) {
-                $i += $item;
+            function ($item) use ($i) {
+                $i->number += $item;
             }
         );
 
-        expect($i)->shouldBe(9);
+        expect($i->number)->shouldBe(9);
     }
 
     function it_can_apply_a_function_then_flatten_the_resulting_array()

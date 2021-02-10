@@ -6,12 +6,9 @@ use IteratorAggregate;
 
 class MutableCollection implements IteratorAggregate, Countable
 {
-    /** @var array */
-    protected $items;
-
-    public function __construct(array $items = [])
-    {
-        $this->items = $items;
+    public function __construct(
+        protected array $items = []
+    ) {
     }
 
     public function count(): int
@@ -36,12 +33,12 @@ class MutableCollection implements IteratorAggregate, Countable
         return get_class($this) === get_class($that) && $this->items === $that->items;
     }
 
-    public function map(callable $f): MutableCollection
+    public function map(callable $f): static
     {
         return new static(array_map($f, $this->items));
     }
 
-    public function flatMap(callable $f): MutableCollection
+    public function flatMap(callable $f): static
     {
         return new static(array_merge(...array_map($f, $this->items)));
     }
@@ -51,7 +48,7 @@ class MutableCollection implements IteratorAggregate, Countable
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(?callable $f = null): MutableCollection
+    public function filter(?callable $f = null): static
     {
         return is_null($f)
             ? new static(array_values(array_filter($this->items)))
@@ -71,19 +68,20 @@ class MutableCollection implements IteratorAggregate, Countable
     public function head()
     {
         $value = reset($this->items);
-        
+
         if (false === $value) {
             return null;
         }
+        
         return $value;
     }
 
-    public function tail(): MutableCollection
+    public function tail(): static
     {
         return new static(array_slice($this->items, 1));
     }
 
-    public function copy(): MutableCollection
+    public function copy(): static
     {
         return clone $this;
     }
@@ -102,9 +100,10 @@ class MutableCollection implements IteratorAggregate, Countable
         return $this->items;
     }
 
-    public function reverse()
+    public function reverse(): static
     {
-        return $this->items = array_reverse($this->items);
+        $this->items = array_reverse($this->items);
+        return $this;
     }
 
     public function getIterator(): ArrayIterator
@@ -130,22 +129,22 @@ class MutableCollection implements IteratorAggregate, Countable
         return $this;
     }
 
-    public function toCollection()
+    public function toCollection(): Collection
     {
         return new Collection($this->items);
     }
 
-    public static function of(array $items): MutableCollection
+    public static function of(array $items): static
     {
         return new static($items);
     }
 
-    public static function empty(): MutableCollection
+    public static function empty(): static
     {
         return new static;
     }
 
-    public static function list(...$items): MutableCollection
+    public static function list(...$items): static
     {
         return new static($items);
     }
