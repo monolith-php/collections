@@ -1,3 +1,3 @@
 # Collections $$VERSION$$
 
-some basic info about collections
+some basic info about collections, they're fancy
