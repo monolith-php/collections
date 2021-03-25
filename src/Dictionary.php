@@ -181,6 +181,11 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
     }
 
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
     public static function of(array $associativeArray): static
     {
         return new static($associativeArray);

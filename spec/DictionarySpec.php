@@ -348,4 +348,16 @@ class DictionarySpec extends ObjectBehavior
             isset($dict[100])
         )->shouldBe(false);
     }
+
+    function it_knows_if_it_is_empty()
+    {
+        $this->beConstructedWith([]);
+        $this->isEmpty()->shouldBe(true);
+    }
+
+    function it_knows_if_it_is_not_empty()
+    {
+        $this->beConstructedWith([1 => 2, 3 => 4]);
+        $this->isEmpty()->shouldBe(false);
+    }
 }
