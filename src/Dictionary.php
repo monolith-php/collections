@@ -77,7 +77,9 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
      */
     public function each(callable $f)
     {
-        array_walk($this->items, $f);
+        foreach ($this->items as $key => $value) {
+            $f($key, $value);
+        }
     }
 
     /**
