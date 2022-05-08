@@ -10,6 +10,12 @@ class DictionarySpec extends ObjectBehavior
     {
         $this->shouldHaveType(Dictionary::class);
     }
+    
+    function it_can_be_constructed_from_keys_and_values()
+    {
+        $this->beConstructedThrough('fromKeysAndValues', [[0], [1]]);
+        $this->get(0)->shouldBe(1);        
+    }
 
     function it_can_be_constructed_as_a_dictionary_of_items()
     {
@@ -166,7 +172,7 @@ class DictionarySpec extends ObjectBehavior
         );
 
         $this->each(
-            function ($value, $key) {
+            function ($key, $value) {
                 expect($value)->shouldBe('flavor');
                 expect($key)->shouldBe('dogs');
             }

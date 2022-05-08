@@ -197,4 +197,13 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         return new static;
     }
+
+    public static function fromKeysAndValues(
+        array $keys,
+        array $values
+    ): static {
+        return new self(
+            array_combine($keys, $values)
+        );
+    }
 }
