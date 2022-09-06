@@ -199,7 +199,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->items[$offset];
     }
@@ -208,7 +208,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * Offset to set
      * This is not supported due to immutable nature.
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new CannotWriteToImmutableCollectionUsingArrayAccess();
     }
@@ -217,7 +217,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * Offset to unset
      * This is not supported due to immutable nature.
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new CannotWriteToImmutableCollectionUsingArrayAccess();
     }

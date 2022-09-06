@@ -152,7 +152,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return new Collection(array_values($this->items));
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->has($offset);
     }
@@ -160,7 +160,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     /**
      * @inheritDoc
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -170,7 +170,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     /**
      * @inheritDoc
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
     }
@@ -178,7 +178,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     /**
      * @inheritDoc
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new CannotWriteToImmutableDictionaryUsingArrayAccess();
     }
