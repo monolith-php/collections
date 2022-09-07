@@ -11,22 +11,22 @@ class MutableDictionary implements IteratorAggregate, Countable
     ) {
     }
 
-    public function has(string $key): bool
+    public function has(mixed $key): bool
     {
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): void
+    public function add(mixed $key, mixed $value): void
     {
         $this->items[$key] = $value;
     }
 
-    public function get(string $key)
+    public function get(mixed $key)
     {
         return $this->items[$key] ?? null;
     }
 
-    public function remove(string $key): void
+    public function remove(mixed $key): void
     {
         unset($this->items[$key]);
     }

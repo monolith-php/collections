@@ -12,24 +12,24 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     ) {
     }
 
-    public function has(string $key): bool
+    public function has(mixed $key): bool
     {
         return array_key_exists($key, $this->items);
     }
 
-    public function add(string $key, $value): static
+    public function add(mixed $key, mixed $value): static
     {
         $newItems = $this->items;
         $newItems[$key] = $value;
         return new static($newItems);
     }
 
-    public function get(string $key)
+    public function get(mixed $key)
     {
         return $this->items[$key] ?? null;
     }
 
-    public function remove(string $key): static
+    public function remove(mixed $key): static
     {
         $newItems = $this->items;
         unset($newItems[$key]);

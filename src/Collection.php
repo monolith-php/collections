@@ -4,7 +4,6 @@ use Countable;
 use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
-use JetBrains\PhpStorm\Pure;
 
 class Collection implements IteratorAggregate, Countable, ArrayAccess
 {
@@ -199,7 +198,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->items[$offset];
     }
