@@ -73,6 +73,17 @@ class DictionarySpec extends ObjectBehavior
         $newDict->get('dogs')->shouldBe(null);
     }
 
+    function it_can_return_the_first_item_matching_a_positive_callback_result()
+    {
+        $this->beConstructedWith([1 => 'a', 2 => 'b', 3 => 'c']);
+        $value = $this->first(
+            function ($key, $value) {
+                return $key == 2;
+            }
+        );
+        $value->shouldBe('b');
+    }
+
     function it_can_serialize_to_an_associative_array()
     {
         $this->beConstructedWith(

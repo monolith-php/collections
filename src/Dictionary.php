@@ -141,6 +141,17 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }
+    
+    public function first(callable $f)
+    {
+        foreach ($this->items as $key => $value) {
+            if ($f($key, $value)) {
+                return $value;
+            }
+        }
+        return null;
+    }
+
 
     public function getIterator(): ArrayIterator
     {
