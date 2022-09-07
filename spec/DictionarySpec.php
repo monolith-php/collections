@@ -10,11 +10,11 @@ class DictionarySpec extends ObjectBehavior
     {
         $this->shouldHaveType(Dictionary::class);
     }
-    
+
     function it_can_be_constructed_from_keys_and_values()
     {
         $this->beConstructedThrough('fromKeysAndValues', [[0], [1]]);
-        $this->get(0)->shouldBe(1);        
+        $this->get(0)->shouldBe(1);
     }
 
     function it_can_be_constructed_as_a_dictionary_of_items()
@@ -82,6 +82,31 @@ class DictionarySpec extends ObjectBehavior
             }
         );
         $value->shouldBe('b');
+    }
+
+    function it_can_flip_keys_and_values()
+    {
+        $this->beConstructedWith(
+            [
+                'dogs' => 'flavor',
+                'cats' => 'levers',
+            ]
+        );
+
+        $this->flip()->toArray()->shouldBe(
+            [
+                'flavor' => 'dogs',
+                'levers' => 'cats',
+            ]
+        );
+
+        # should not mutate original dictionary
+        $this->toArray()->shouldBe(
+            [
+                'dogs' => 'flavor',
+                'cats' => 'levers',
+            ]
+        );
     }
 
     function it_can_serialize_to_an_associative_array()
@@ -232,7 +257,7 @@ class DictionarySpec extends ObjectBehavior
             },
             'hi'
         );
-        
+
         $value->shouldBe('hia1b2c3');
     }
 

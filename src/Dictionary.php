@@ -141,7 +141,7 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         return new static(array_filter($this->items, $f, ARRAY_FILTER_USE_BOTH));
     }
-    
+
     public function first(callable $f)
     {
         foreach ($this->items as $key => $value) {
@@ -152,6 +152,12 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return null;
     }
 
+    public function flip(): self
+    {
+        return new Dictionary(
+            array_flip($this->items)
+        );
+    }
 
     public function getIterator(): ArrayIterator
     {
