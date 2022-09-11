@@ -38,6 +38,17 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
+    public function indexFor(mixed $valueToFind): ?int 
+    {
+        foreach ($this->items as $key => $value) {
+            if ($value === $valueToFind) {
+                return $key;
+            }
+        }
+        
+        return null;
+    }
+    
     public function equals(Collection $that, callable $predicate = null): bool
     {
         if (is_null($predicate)) {

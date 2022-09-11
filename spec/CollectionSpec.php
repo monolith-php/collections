@@ -50,6 +50,16 @@ class CollectionSpec extends ObjectBehavior
         $collection->contains('cat')->shouldBe(false);
         $collection->contains('dog')->shouldBe(true);
     }
+    
+    function it_can_find_an_index_for_a_value()
+    {
+        $collection = $this->add('hats')->add('cats')->add('dogs');
+        
+        $collection->indexFor('hats')->shouldBe(0);
+        $collection->indexFor('cats')->shouldBe(1);
+        $collection->indexFor('dogs')->shouldBe(2);
+        $collection->indexFor('non existent')->shouldBe(null);
+    }
 
     function it_can_tell_if_it_contains_a_value_that_matches_a_predicate()
     {
