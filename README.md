@@ -1,3 +1,4 @@
 # Collections $$VERSION$$
 
-some basic info about collections, they're fancy
+# Major Release 10.0
+    - MutableDictionary's map() arguments swapped (value, key) to (key, value)

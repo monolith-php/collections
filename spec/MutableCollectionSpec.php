@@ -2,8 +2,6 @@
 
 use PhpSpec\ObjectBehavior;
 use Monolith\Collections\MutableCollection;
-use Monolith\Collections\CollectionTypeError;
-use spec\Monolith\Collections\Stubs\MutableCollectionStub;
 
 class MutableCollectionSpec extends ObjectBehavior
 {
@@ -79,19 +77,6 @@ class MutableCollectionSpec extends ObjectBehavior
         });
 
         $flatMap->equals(new MutableCollection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
-    }
-
-    function it_can_compare_two_collections_by_their_contents_with_contravariance()
-    {
-        $this->beConstructedWith([1, 2, 3]);
-
-        $same = new MutableCollection([1, 2, 3]);
-        $different = new MutableCollection([2, 3, 1]);
-        $sameButWithDifferentType = new MutableCollectionStub([1, 2, 3]);
-
-        $this->equals($same)->shouldBe(true);
-        $this->equals($different)->shouldBe(false);
-        $this->equals($sameButWithDifferentType)->shouldBe(false);
     }
 
     function it_can_apply_a_function_to_each_item_and_return_a_new_collection_with_the_results()
@@ -181,12 +166,6 @@ class MutableCollectionSpec extends ObjectBehavior
         $this->merge(new MutableCollection([4, 5, 6]));
 
         $this->equals(new MutableCollection([1, 2, 3, 4, 5, 6]))->shouldBe(true);
-    }
-
-    function it_can_only_merge_collections_that_share_a_type()
-    {
-        $this->beConstructedWith([1, 2, 3]);
-        $this->shouldThrow(CollectionTypeError::class)->during('merge', [new MutableCollectionStub]);
     }
 
     function it_can_reverse_the_order_of_items_in_the_collection()

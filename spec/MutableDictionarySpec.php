@@ -1,7 +1,7 @@
 <?php namespace spec\Monolith\Collections;
 
-use Monolith\Collections\MutableDictionary;
 use PhpSpec\ObjectBehavior;
+use Monolith\Collections\MutableDictionary;
 
 class MutableDictionarySpec extends ObjectBehavior
 {
@@ -12,7 +12,14 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_be_initialized_as_a_dictionary_of_items()
     {
-        $this->beConstructedThrough('of', [[0 => 2]]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    0 => 2,
+                ],
+            ]
+        );
         $this->get(0)->shouldBe(2);
     }
 
@@ -24,38 +31,71 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_be_constructed_with_an_associative_array_of_items()
     {
-        $this->beConstructedWith(['hats' => 'cats']);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'hats' => 'cats',
+                ],
+            ]
+        );
         $this->get('hats')->shouldBe('cats');
     }
 
     function it_can_be_constructed_with_a_numerically_indexed_array_of_items()
     {
-        $this->beConstructedWith(['hats', 'cats']);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'hats',
+                    'cats',
+                ],
+            ]
+        );
         $this->get(0)->shouldBe('hats');
         $this->get(1)->shouldBe('cats');
     }
 
     function it_can_tell_you_if_a_key_exists()
     {
-        $this->beConstructedWith(['hats' => 'cats']);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'hats' => 'cats',
+                ],
+            ]
+        );
         $this->get('hats')->shouldBe('cats');
         $this->get('bats')->shouldBe(null);
     }
 
     function it_can_retrieve_values_by_key()
     {
-        $this->beConstructedWith(['dogs' => 'robot']);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'dogs' => 'robot',
+                ],
+            ]
+        );
         $this->get('dogs')->shouldBe('robot');
     }
 
     function it_can_add_new_values_to_keys()
     {
+        $this->beConstructedThrough('empty');
+
         $this->add('dogs', 'flavor');
         $this->get('dogs')->shouldBe('flavor');
     }
 
     function it_can_remove_values_by_key()
     {
+        $this->beConstructedThrough('empty');
+
         $this->add('dogs', 'flavor');
         $this->remove('dogs');
         $this->get('dogs')->shouldBe(null);
@@ -63,23 +103,33 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_serialize_to_an_associative_array()
     {
+        $this->beConstructedThrough('empty');
+
         $this->add('dogs', 'flavor');
         $this->add('cats', 'levers');
 
-        $this->toArray()->shouldBe([
-            'dogs' => 'flavor',
-            'cats' => 'levers',
-        ]);
+        $this->toArray()->shouldBe(
+            [
+                'dogs' => 'flavor',
+                'cats' => 'levers',
+            ]
+        );
     }
 
     function it_can_be_merged_with_other_mutable_maps()
     {
+        $this->beConstructedThrough('empty');
+
         $this->add('dogs', 'flavor');
         $this->add('cats', 'levers');
 
-        $this->merge(new MutableDictionary([
-            'loops' => 'groove',
-        ]));
+        $this->merge(
+            MutableDictionary::of(
+                [
+                    'loops' => 'groove',
+                ]
+            )
+        );
 
         $this->get('dogs')->shouldBe('flavor');
         $this->get('cats')->shouldBe('levers');
@@ -88,10 +138,15 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_count_its_items()
     {
-        $this->beConstructedWith([
-            'dogs' => 'flavor',
-            'cats' => 'levers',
-        ]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
+            ]
+        );
 
         $this->count()->shouldBe(2);
 
@@ -101,6 +156,8 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_be_copied()
     {
+        $this->beConstructedThrough('empty');
+
         $this->add('dogs', 'flavor');
         $this->add('cats', 'levers');
 
@@ -112,10 +169,15 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_be_iterated_over()
     {
-        $this->beConstructedWith([
-            'dogs' => 'flavor',
-            'cats' => 'levers',
-        ]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
+            ]
+        );
 
         foreach ($this->getWrappedObject() as $key => $value) {
             if ($key == 'dogs') {
@@ -129,72 +191,116 @@ class MutableDictionarySpec extends ObjectBehavior
 
     function it_can_apply_a_function_to_each_item_and_return_a_new_dict_with_the_results()
     {
-        $this->beConstructedWith([
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
-        $mapped = $this->map(function ($number, $letter) {
-            return [++$letter => $number + 1];
-        });
+        $mapped = $this->map(
+            function ($letter, $number) {
+                /** @noinspection PhpIllegalArrayKeyTypeInspection */
+                /** @noinspection PhpArithmeticTypeCheckInspection */
+                return [++$letter => $number + 1];
+            }
+        );
 
-        $mapped->toArray()->shouldBe([
-            'b' => 2,
-            'c' => 3,
-            'd' => 4,
-        ]);
+        $mapped->toArray()->shouldBe(
+            [
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+            ]
+        );
     }
 
     function it_can_filter_values_based_on_a_fitness_function()
     {
-        $this->beConstructedWith([
-            'a' => 1,
-            'b' => 2,
-            'c' => 3,
-        ]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
+            ]
+        );
 
         $filtered = $this->filter(function ($value, $key) {
             return $value != 2;
         });
 
-        $filtered->toArray()->shouldBe([
-            'a' => 1,
-            'c' => 3,
-        ]);
+        $filtered->toArray()->shouldBe(
+            [
+                'a' => 1,
+                'c' => 3,
+            ]
+        );
     }
 
     function it_can_filter_keys_based_on_a_fitness_function()
     {
-        $this->beConstructedWith([
-            'a' => 1,
-            'b' => 2,
-            'c' => 3,
-        ]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
+            ]
+        );
 
         $filtered = $this->filter(function ($value, $key) {
             return $key != 'a';
         });
 
-        $filtered->toArray()->shouldBe([
-            'b' => 2,
-            'c' => 3,
-        ]);
+        $filtered->toArray()->shouldBe(
+            [
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
     }
 
     function it_can_drop_keys_and_be_cast_to_a_collection()
     {
-        $this->beConstructedWith([
-            'a' => 1,
-            'b' => 2,
-            'c' => 3,
-        ]);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
+            ]
+        );
 
-        $this->toCollection()->toArray()->shouldBe([
-            0 => 1,
-            1 => 2,
-            2 => 3,
-        ]);
+        $this->toCollection()->toArray()->shouldBe(
+            [
+                0 => 1,
+                1 => 2,
+                2 => 3,
+            ]
+        );
+    }
+
+    function it_can_use_objects_as_keys()
+    {
+        $this->beConstructedThrough('empty');
+
+        $objectKey = new class {
+        };
+
+        # make more tests with the necessary variance
+        $this->add($objectKey, 'hats');
+
+        $this->get($objectKey)->shouldBe('hats');
     }
 }

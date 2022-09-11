@@ -5,10 +5,10 @@ use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
 
-class Collection implements IteratorAggregate, Countable, ArrayAccess
+final class Collection implements IteratorAggregate, Countable, ArrayAccess
 {
     public function __construct(
-        protected array $items = []
+        private array $items = []
     ) {
     }
 
@@ -24,11 +24,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return ! is_null($foundItem);
     }
 
-    public function add($item): static
+    public function add($item): self
     {
         $items = $this->items;
         $items[] = $item;
-        return new static($items);
+        return new self($items);
     }
 
     public function each(callable $predicate): void
@@ -91,29 +91,29 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $this->copy()->items;
     }
 
-    public function copy(): static
+    public function copy(): self
     {
         return clone $this;
     }
 
-    public function map(callable $f): static
+    public function map(callable $f): self
     {
-        return new static(array_map($f, $this->items));
+        return new self(array_map($f, $this->items));
     }
 
-    public function mapKeyValues(callable $f): static
+    public function mapKeyValues(callable $f): self
     {
-        return new static(array_map($f, array_keys($this->items), $this->items));
+        return new self(array_map($f, array_keys($this->items), $this->items));
     }
 
-    public function flatten(): static
+    public function flatten(): self
     {
-        return new static(array_merge(...array_map(fn($x) => $x, $this->items)));
+        return new self(array_merge(...array_map(fn($x) => $x, $this->items)));
     }
 
-    public function flatMap(callable $f): static
+    public function flatMap(callable $f): self
     {
-        return new static(array_merge(...array_map($f, $this->items)));
+        return new self(array_merge(...array_map($f, $this->items)));
     }
 
     public function reduce(callable $f, $initial = null)
@@ -121,11 +121,11 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(?callable $predicate = null): static
+    public function filter(?callable $predicate = null): self
     {
         return is_null($predicate)
-            ? new static(array_values(array_filter($this->items)))
-            : new static(array_values(array_filter($this->items, $predicate)));
+            ? new self(array_values(array_filter($this->items)))
+            : new self(array_values(array_filter($this->items, $predicate)));
     }
 
     public function firstIndex(callable $predicate): ?int
@@ -158,27 +158,29 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $value;
     }
 
-    public function tail(): static
+    public function tail(): self
     {
-        return new static(array_slice($this->items, 1));
+        return new self(array_slice($this->items, 1));
     }
 
     public function toDictionary(): Dictionary
     {
-        return new Dictionary($this->toArray());
+        return Dictionary::of(
+            $this->items
+        );
     }
 
-    public function merge(Collection $that): static
+    public function merge(Collection $that): self
     {
         if (get_class($this) !== get_class($that)) {
             throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
         }
-        return new static(array_merge($this->items, $that->items));
+        return new self(array_merge($this->items, $that->items));
     }
 
-    public function reverse(): static
+    public function reverse(): self
     {
-        return new static(array_reverse($this->items));
+        return new self(array_reverse($this->items));
     }
 
     public function getIterator(): ArrayIterator
@@ -191,7 +193,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return empty($this->items);
     }
 
-    public function sort(?callable $f): static
+    public function sort(?callable $f): self
     {
         $items = $this->items;
         usort($items, $f);
@@ -260,7 +262,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
 
     public function zip(Collection $that): Dictionary
     {
-        return new Dictionary(
+        return Dictionary::of(
             array_map(null, $this->items, $that->items)
         );
     }
@@ -268,10 +270,10 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
     public function unique(?callable $hashFunction = null)
     {
         if (is_null($hashFunction)) {
-            return new static(array_values(array_unique($this->items)));
+            return new self(array_values(array_unique($this->items)));
         }
 
-        $hashTable = new MutableDictionary();
+        $hashTable = MutableDictionary::empty();
 
         $this->each(
             function ($item) use ($hashTable, $hashFunction) {
@@ -283,18 +285,18 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return $hashTable->toCollection();
     }
 
-    public static function of(array $items): static
+    public static function of(array $items): self
     {
-        return new static($items);
+        return new self($items);
     }
 
-    public static function empty(): static
+    public static function empty(): self
     {
-        return new static;
+        return new self;
     }
 
-    public static function list(...$items): static
+    public static function list(...$items): self
     {
-        return new static($items);
+        return new self($items);
     }
 }

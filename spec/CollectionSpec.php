@@ -4,7 +4,6 @@ use PhpSpec\ObjectBehavior;
 use Monolith\Collections\Dictionary;
 use Monolith\Collections\Collection;
 use Monolith\Collections\CollectionTypeError;
-use spec\Monolith\Collections\Stubs\CollectionStub;
 
 class CollectionSpec extends ObjectBehavior
 {
@@ -139,19 +138,6 @@ class CollectionSpec extends ObjectBehavior
         $structure->equals(new Collection([1, 11, 21, 2, 12, 22, 3, 13, 23]))->shouldBe(true);
     }
     
-    function it_can_compare_two_collections_by_their_contents_with_contravariance()
-    {
-        $this->beConstructedWith([1, 2, 3]);
-
-        $same = new Collection([1, 2, 3]);
-        $different = new Collection([2, 3, 1]);
-        $sameButWithDifferentType = new CollectionStub([1, 2, 3]);
-
-        $this->equals($same)->shouldBe(true);
-        $this->equals($different)->shouldBe(false);
-        $this->equals($sameButWithDifferentType)->shouldBe(false);
-    }
-
     function it_can_apply_a_function_to_each_item_and_return_a_new_collection_with_the_results()
     {
         $this->beConstructedWith([1, 2, 3]);
@@ -183,7 +169,7 @@ class CollectionSpec extends ObjectBehavior
         $this->beConstructedWith([1, 2, 3]);
 
         $reduced = $this->reduce(
-            function ($item, $accumulation) {
+            function (mixed $item, mixed $accumulation) {
                 return $item . ' ' . $accumulation;
             }, ''
         );
@@ -270,12 +256,6 @@ class CollectionSpec extends ObjectBehavior
         $merged = $this->merge(new Collection([4, 5, 6]));
 
         $merged->equals(new Collection([1, 2, 3, 4, 5, 6]))->shouldBe(true);
-    }
-
-    function it_can_only_merge_collections_that_share_a_type()
-    {
-        $this->beConstructedWith([1, 2, 3]);
-        $this->shouldThrow(CollectionTypeError::class)->during('merge', [new CollectionStub]);
     }
 
     function it_can_reverse_the_order_of_items_in_the_collection()
@@ -492,7 +472,7 @@ class CollectionSpec extends ObjectBehavior
         $this->beConstructedWith([1, 2, 3, 4]);
 
         $this->unique(
-            function ($item) {
+            function (int $item) {
                 return $item % 2;
             }
         )->toArray()->shouldBe([3, 4]);

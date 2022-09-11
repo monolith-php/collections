@@ -2,7 +2,6 @@
 
 use PhpSpec\ObjectBehavior;
 use Monolith\Collections\Dictionary;
-use spec\Monolith\Collections\Stubs\SubtypedDictionaryStub;
 
 class DictionarySpec extends ObjectBehavior
 {
@@ -31,62 +30,71 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_be_constructed_with_an_associative_array_of_items()
     {
-        $this->beConstructedWith(['hats' => 'cats']);
+        $this->beConstructedThrough('of', [['hats' => 'cats']]);
         $this->get('hats')->shouldBe('cats');
     }
 
     function it_can_be_constructed_with_a_numerically_indexed_array_of_items()
     {
-        $this->beConstructedWith(['hats', 'cats']);
+        $this->beConstructedThrough('of', [['hats', 'cats']]);
         $this->get(0)->shouldBe('hats');
         $this->get(1)->shouldBe('cats');
     }
 
     function it_can_tell_you_if_a_key_exists()
     {
-        $this->beConstructedWith(['hats' => 'cats']);
+        $this->beConstructedThrough('of', [['hats' => 'cats']]);
         $this->get('hats')->shouldBe('cats');
         $this->get('bats')->shouldBe(null);
     }
 
     function it_can_tell_if_it_contains_a_pair_that_matches_a_predicate()
     {
-        $this->beConstructedWith(['dogs' => 'robot']);
-        
+        $this->beConstructedThrough('of', [['dogs' => 'robot']]);
+
         $this->containsMatch(
             fn($key, $value) => $key == 'hat'
         )->shouldBe(false);
-        
+
         $this->containsMatch(
             fn($key, $value) => $key == 'dogs'
         )->shouldBe(true);
-        
+
         $this->containsMatch(
             fn($key, $value) => $value == 'lever'
         )->shouldBe(false);
-        
+
         $this->containsMatch(
             fn($key, $value) => $value == 'robot'
         )->shouldBe(true);
     }
-    
+
     function it_can_retrieve_values_by_key()
     {
-        $this->beConstructedWith(['dogs' => 'robot']);
+        $this->beConstructedThrough('of', [['dogs' => 'robot']]);
         $this->get('dogs')->shouldBe('robot');
     }
 
-    function it_returns_new_dicts_when_adding_new_values_to_keys()
+    function it_can_tell_if_it_has_a_value_for_a_key()
     {
+        $this->beConstructedThrough('of', [['dogs' => 'robot']]);
+        $this->has('dogs')->shouldBe(true);
+        $this->has('robot')->shouldBe(false);
+    }
+    
+    function it_returns_new_dictionaries_when_adding_new_values_to_keys()
+    {
+        $this->beConstructedThrough('empty');
+
         $newDict = $this->add('dogs', 'flavor');
         $this->get('dogs')->shouldBe(null);
 
         $newDict->get('dogs')->shouldBe('flavor');
     }
 
-    function it_returns_new_dicts_when_removing_values_by_key()
+    function it_returns_new_dictionaries_when_removing_values_by_key()
     {
-        $this->beConstructedWith(['dogs' => 'flavor']);
+        $this->beConstructedThrough('of', [['dogs' => 'flavor']]);
 
         $newDict = $this->remove('dogs');
         $this->get('dogs')->shouldBe('flavor');
@@ -94,23 +102,34 @@ class DictionarySpec extends ObjectBehavior
         $newDict->get('dogs')->shouldBe(null);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     function it_can_return_the_first_item_matching_a_positive_callback_result()
     {
-        $this->beConstructedWith([1 => 'a', 2 => 'b', 3 => 'c']);
+        $this->beConstructedThrough(
+            'of',
+            [
+                [1 => 'a', 2 => 'b', 3 => 'c'],
+            ]
+        );
+
         $value = $this->first(
-            function ($key, $value) {
+            function (mixed $key, mixed $value): bool {
                 return $key == 2;
             }
         );
+
         $value->shouldBe('b');
     }
 
     function it_can_flip_keys_and_values()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
@@ -132,10 +151,13 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_serialize_to_an_associative_array()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
@@ -149,10 +171,13 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_count_its_items()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
@@ -162,20 +187,23 @@ class DictionarySpec extends ObjectBehavior
         expect(count($this->getWrappedObject()))->shouldBe(2);
     }
 
-    function it_returns_new_dicts_when_merging_with_other_dicts()
+    function it_returns_new_dictionaries_when_merging_with_other_dictionaries()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
         $newDict = $this->merge(
-            new Dictionary(
+            Dictionary::of(
                 [
                     'loops' => 'groove',
-                ]
+                ],
             )
         );
 
@@ -188,10 +216,13 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_be_copied()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
@@ -203,10 +234,13 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_be_iterated_over()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
-                'cats' => 'levers',
+                [
+                    'dogs' => 'flavor',
+                    'cats' => 'levers',
+                ],
             ]
         );
 
@@ -222,12 +256,15 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_walk_over_items()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'dogs' => 'flavor',
+                [
+                    'dogs' => 'flavor',
+                ],
             ]
         );
-
+        
         $this->each(
             function ($key, $value) {
                 expect($value)->shouldBe('flavor');
@@ -239,16 +276,21 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_apply_a_function_to_each_item_and_return_a_new_dict_with_the_results()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
         $mapped = $this->map(
             function ($letter, $number) {
+                /** @noinspection PhpIllegalArrayKeyTypeInspection */
+                /** @noinspection PhpArithmeticTypeCheckInspection */
                 return [++$letter => $number + 1];
             }
         );
@@ -264,16 +306,19 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_reduce_a_dictionary_to_a_value()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
         $value = $this->reduce(
-            function ($key, $value, $carry) {
+            function (mixed $key, mixed $value, mixed $carry) {
                 return $carry . $key . $value;
             },
             'hi'
@@ -284,11 +329,14 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_output_collections_containing_only_keys()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
@@ -303,11 +351,14 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_output_collections_containing_only_values()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
@@ -320,13 +371,17 @@ class DictionarySpec extends ObjectBehavior
         );
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     function it_can_filter_values_based_on_a_fitness_function()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
@@ -346,11 +401,14 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_filter_keys_based_on_a_fitness_function()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
@@ -370,11 +428,14 @@ class DictionarySpec extends ObjectBehavior
 
     function it_can_dump_keys_and_return_a_collection()
     {
-        $this->beConstructedWith(
+        $this->beConstructedThrough(
+            'of',
             [
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 3,
+                ],
             ]
         );
 
@@ -387,15 +448,9 @@ class DictionarySpec extends ObjectBehavior
         );
     }
 
-    function it_returns_subtyped_collections_from_factory_methods()
-    {
-        $newDict = SubtypedDictionaryStub::of([]);
-        expect($newDict)->shouldHaveType(SubtypedDictionaryStub::class);
-    }
-
     function it_provides_php_array_access()
     {
-        $this->beConstructedWith([1 => 2, 3 => 4]);
+        $this->beConstructedThrough('of', [[1 => 2, 3 => 4]]);
 
         # offset get
         $this[1]->shouldBe(2);
@@ -414,13 +469,26 @@ class DictionarySpec extends ObjectBehavior
 
     function it_knows_if_it_is_empty()
     {
-        $this->beConstructedWith([]);
+        $this->beConstructedThrough('of', [[]]);
         $this->isEmpty()->shouldBe(true);
     }
 
     function it_knows_if_it_is_not_empty()
     {
-        $this->beConstructedWith([1 => 2, 3 => 4]);
+        $this->beConstructedThrough('of', [[1 => 2, 3 => 4]]);
         $this->isEmpty()->shouldBe(false);
+    }
+
+    function it_can_use_objects_as_keys()
+    {
+        $this->beConstructedThrough('empty');
+        
+        $objectKey = new class {
+        };
+
+        # make more tests with the necessary variance
+        $dict = $this->add($objectKey, 'hats');
+
+        $dict->get($objectKey)->shouldBe('hats');
     }
 }

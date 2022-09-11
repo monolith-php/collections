@@ -1,3 +1,5 @@
 <?php namespace Monolith\Collections;
 
-class CollectionException extends \Exception {}
+use Exception;
+
+class CollectionException extends Exception {}

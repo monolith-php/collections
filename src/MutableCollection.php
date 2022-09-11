@@ -4,7 +4,7 @@ use Countable;
 use ArrayIterator;
 use IteratorAggregate;
 
-class MutableCollection implements IteratorAggregate, Countable
+final class MutableCollection implements IteratorAggregate, Countable
 {
     public function __construct(
         protected array $items = []
@@ -88,10 +88,6 @@ class MutableCollection implements IteratorAggregate, Countable
 
     public function merge(MutableCollection $that)
     {
-        if (get_class($this) !== get_class($that)) {
-            throw CollectionTypeError::cannotMergeDifferentTypes($this, $that);
-        }
-
         $this->items = array_merge($this->items, $that->toArray());
     }
 
