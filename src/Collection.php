@@ -38,6 +38,15 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
+    public function index(int $index): mixed 
+    {
+        if ( ! isset($this->items[$index])) {
+            return null;
+        }
+        
+        return $this->items[$index];
+    }
+    
     public function indexFor(mixed $valueToFind): ?int 
     {
         foreach ($this->items as $key => $value) {

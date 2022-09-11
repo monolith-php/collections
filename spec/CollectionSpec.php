@@ -51,6 +51,16 @@ class CollectionSpec extends ObjectBehavior
         $collection->contains('dog')->shouldBe(true);
     }
     
+    function it_can_return_a_value_by_index()
+    {
+        $collection = $this->add('hats')->add('cats')->add('dogs');
+        
+        $collection->index(0)->shouldBe('hats');
+        $collection->index(1)->shouldBe('cats');
+        $collection->index(2)->shouldBe('dogs');
+        $collection->index(3)->shouldBe(null);
+    }
+    
     function it_can_find_an_index_for_a_value()
     {
         $collection = $this->add('hats')->add('cats')->add('dogs');
