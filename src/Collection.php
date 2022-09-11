@@ -17,6 +17,13 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return in_array($value, $this->items);
     }
 
+    public function containsMatch(callable $predicate): bool 
+    {
+        $foundItem = $this->first($predicate);
+        
+        return ! is_null($foundItem);
+    }
+    
     public function add($item): static
     {
         $items = $this->items;
@@ -24,16 +31,16 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return new static($items);
     }
 
-    public function each(callable $f): void
+    public function each(callable $predicate): void
     {
         foreach ($this->items as $i) {
-            $f($i);
+            $predicate($i);
         }
     }
 
-    public function equals(Collection $that, callable $func = null): bool
+    public function equals(Collection $that, callable $predicate = null): bool
     {
-        if (is_null($func)) {
+        if (is_null($predicate)) {
             return get_class($this) === get_class($that) && $this->items === $that->items;
         }
 
@@ -46,7 +53,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         $two = $that->toArray();
 
         foreach (range(0, $this->count() - 1) as $i) {
-            if ( ! $func($one[0], $two[0])) {
+            if ( ! $predicate($one[0], $two[0])) {
                 return false;
             }
         }
@@ -94,17 +101,17 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return array_reduce($this->items, $f, $initial);
     }
 
-    public function filter(?callable $f = null): static
+    public function filter(?callable $predicate = null): static
     {
-        return is_null($f)
+        return is_null($predicate)
             ? new static(array_values(array_filter($this->items)))
-            : new static(array_values(array_filter($this->items, $f)));
+            : new static(array_values(array_filter($this->items, $predicate)));
     }
 
-    public function first(callable $f)
+    public function first(callable $predicate)
     {
         foreach ($this->items as $item) {
-            if ($f($item)) {
+            if ($predicate($item)) {
                 return $item;
             }
         }
@@ -167,7 +174,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * @param string $delimiter
      * @return string
      */
-    public function implode($delimiter = ', '): string
+    public function implode(string $delimiter = ', '): string
     {
         return implode($delimiter, $this->items);
     }
@@ -184,7 +191,7 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->items);
     }
@@ -228,17 +235,17 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         );
     }
 
-    public function unique(?callable $f = null)
+    public function unique(?callable $hashFunction = null)
     {
-        if (is_null($f)) {
+        if (is_null($hashFunction)) {
             return new static(array_values(array_unique($this->items)));
         }
 
         $hashTable = new MutableDictionary();
 
         $this->each(
-            function ($item) use ($hashTable, $f) {
-                $hash = $f($item);
+            function ($item) use ($hashTable, $hashFunction) {
+                $hash = $hashFunction($item);
                 $hashTable->add($hash, $item);
             }
         );

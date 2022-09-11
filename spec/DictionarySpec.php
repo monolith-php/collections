@@ -49,6 +49,27 @@ class DictionarySpec extends ObjectBehavior
         $this->get('bats')->shouldBe(null);
     }
 
+    function it_can_tell_if_it_contains_a_pair_that_matches_a_predicate()
+    {
+        $this->beConstructedWith(['dogs' => 'robot']);
+        
+        $this->containsMatch(
+            fn($key, $value) => $key == 'hat'
+        )->shouldBe(false);
+        
+        $this->containsMatch(
+            fn($key, $value) => $key == 'dogs'
+        )->shouldBe(true);
+        
+        $this->containsMatch(
+            fn($key, $value) => $value == 'lever'
+        )->shouldBe(false);
+        
+        $this->containsMatch(
+            fn($key, $value) => $value == 'robot'
+        )->shouldBe(true);
+    }
+    
     function it_can_retrieve_values_by_key()
     {
         $this->beConstructedWith(['dogs' => 'robot']);

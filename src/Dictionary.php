@@ -12,6 +12,13 @@ class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     ) {
     }
 
+    public function containsMatch(callable $predicate): bool 
+    {
+        $foundItem = $this->first($predicate);
+        
+        return ! is_null($foundItem);
+    }
+    
     public function has(mixed $key): bool
     {
         return array_key_exists($key, $this->items);

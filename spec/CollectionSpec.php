@@ -51,6 +51,19 @@ class CollectionSpec extends ObjectBehavior
         $collection->contains('dog')->shouldBe(true);
     }
 
+    function it_can_tell_if_it_contains_a_value_that_matches_a_predicate()
+    {
+        $collection = $this->add('dog');
+        
+        $collection->containsMatch(
+            fn($item) => $item == 'cat'
+        )->shouldBe(false);
+        
+        $collection->containsMatch(
+            fn($item) => $item == 'dog'
+        )->shouldBe(true);
+    }
+
     function it_can_add_items_to_the_collection()
     {
         $this->add(1)->head()->shouldBe(1);
