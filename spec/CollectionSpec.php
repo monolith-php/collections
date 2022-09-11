@@ -306,6 +306,23 @@ class CollectionSpec extends ObjectBehavior
         expect($unemptyCollection)->isEmpty()->shouldBe(false);
     }
 
+    function it_can_return_the_index_of_the_first_item_matching_a_positive_callback_result()
+    {
+        $collection = $this->add('hats')->add('cats')->add('cats')->add('robots');
+        
+        $collection->firstIndex(
+            fn ($item) => $item == 'cats'
+        )->shouldBe(1);
+        
+        $collection->firstIndex(
+            fn ($item) => $item == 'dogs'
+        )->shouldBe(null);
+        
+        $collection->firstIndex(
+            fn ($item) => $item == 'robots'
+        )->shouldBe(3);
+    }
+
     function it_can_return_the_first_item_matching_a_positive_callback_result()
     {
         $this->beConstructedWith([1, 2, 3]);

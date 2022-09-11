@@ -17,13 +17,13 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return in_array($value, $this->items);
     }
 
-    public function containsMatch(callable $predicate): bool 
+    public function containsMatch(callable $predicate): bool
     {
         $foundItem = $this->first($predicate);
-        
+
         return ! is_null($foundItem);
     }
-    
+
     public function add($item): static
     {
         $items = $this->items;
@@ -38,26 +38,26 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
-    public function index(int $index): mixed 
+    public function index(int $index): mixed
     {
         if ( ! isset($this->items[$index])) {
             return null;
         }
-        
+
         return $this->items[$index];
     }
-    
-    public function indexFor(mixed $valueToFind): ?int 
+
+    public function indexFor(mixed $valueToFind): ?int
     {
         foreach ($this->items as $key => $value) {
             if ($value === $valueToFind) {
                 return $key;
             }
         }
-        
+
         return null;
     }
-    
+
     public function equals(Collection $that, callable $predicate = null): bool
     {
         if (is_null($predicate)) {
@@ -126,6 +126,16 @@ class Collection implements IteratorAggregate, Countable, ArrayAccess
         return is_null($predicate)
             ? new static(array_values(array_filter($this->items)))
             : new static(array_values(array_filter($this->items, $predicate)));
+    }
+
+    public function firstIndex(callable $predicate): ?int
+    {
+        foreach ($this->items as $index => $item) {
+            if ($predicate($item)) {
+                return $index;
+            }
+        }
+        return null;
     }
 
     public function first(callable $predicate)
