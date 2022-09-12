@@ -228,6 +228,18 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         );
     }
 
+    public function firstKey(callable $f) 
+    {
+        foreach ($this->items as $keyIndex => $value) {
+            $key = $this->keyLookupTable->index($keyIndex);
+
+            if ($f($key, $value)) {
+                return $key;
+            }
+        }
+        return null;
+    }
+    
     public function first(callable $f)
     {
         foreach ($this->items as $keyIndex => $value) {

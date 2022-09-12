@@ -121,6 +121,24 @@ class DictionarySpec extends ObjectBehavior
         $value->shouldBe('b');
     }
 
+    function it_can_return_the_first_key_matching_a_positive_callback_result()
+    {
+        $this->beConstructedThrough(
+            'of',
+            [
+                [1 => 'a', 2 => 'b', 3 => 'c'],
+            ]
+        );
+
+        $key = $this->firstKey(
+            function (mixed $key, mixed $value): bool {
+                return $value == 'c';
+            }
+        );
+
+        $key->shouldBe(3);
+    }
+
     function it_can_flip_keys_and_values()
     {
         $this->beConstructedThrough(
