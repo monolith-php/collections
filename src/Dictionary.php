@@ -116,11 +116,15 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 
     public function keys(): Collection
     {
-        return new Collection(
-            array_keys($this->toArray())
-        );
-    }
+        $keys = [];
 
+        foreach ($this->items as $keyIndex => $value) {
+            $keys[] = $this->keyLookupTable->index($keyIndex);
+        }
+
+        return Collection::of($keys);
+    }
+    
     public function values(): Collection
     {
         return new Collection(array_values($this->items));
