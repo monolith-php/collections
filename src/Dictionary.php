@@ -24,8 +24,14 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 
     public function has(mixed $key): bool
     {
-        $keyIndex = $this->keyLookupTable->indexFor($key);
-        return array_key_exists($keyIndex, $this->items);
+        return array_key_exists(
+            self::keyIndexForKey(
+                $this->keyLookupTable,
+                $this->keyHashFunction,
+                $key
+            ),
+            $this->items
+        );
     }
 
     public function add(mixed $key, mixed $value): self
@@ -37,7 +43,14 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         );
 
         $newItems = $this->items;
-        $newItems[$newKeyLookupTable->indexFor($key)] = $value;
+
+        $keyIndex = self::keyIndexForKey(
+            $newKeyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
+
+        $newItems[$keyIndex] = $value;
 
         return new self(
             $newKeyLookupTable,
@@ -48,21 +61,35 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
 
     public function get(mixed $key)
     {
-        return $this->items[$this->keyLookupTable->indexFor($key)] ?? null;
+        $keyIndex = self::keyIndexForKey(
+            $this->keyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
+
+        if (is_null($keyIndex)) {
+            return null;
+        }
+
+        return $this->items[$keyIndex] ?? null;
     }
 
     public function remove(mixed $key): self
     {
         $newKeyLookupTable = $this->keyLookupTable;
-        
+
         $newItems = $this->items;
-        $keyIndex = $newKeyLookupTable->indexFor($key);
-        
+        $keyIndex = self::keyIndexForKey(
+            $newKeyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
+
         unset($newItems[$keyIndex]);
         $newKeyLookupTable = $newKeyLookupTable->filter(
             fn($tableKey) => ($this->keyHashFunction)($tableKey) !== ($this->keyHashFunction)($key)
         );
-        
+
         return new self(
             $newKeyLookupTable,
             $this->keyHashFunction,
@@ -108,11 +135,11 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
     {
         $dictOne = $this->reindexKeys(0);
         $dictTwo = $that->reindexKeys($dictOne->count());
-        
+
         $newLookupTable = $dictOne->keyLookupTable->merge(
             $dictTwo->keyLookupTable
         );
-        
+
         $newItems = array_merge($this->items, $that->items);
 
         return new self(
@@ -171,7 +198,13 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
                 $resultKey
             );
 
-            $newItems[$newKeyLookupTable->indexFor($resultKey)] = $resultValue;
+            $newKeyIndex = self::keyIndexForKey(
+                $newKeyLookupTable,
+                $this->keyHashFunction,
+                $resultKey
+            );
+
+            $newItems[$newKeyIndex] = $resultValue;
         }
 
         return new self(
@@ -228,7 +261,7 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         );
     }
 
-    public function firstKey(callable $f) 
+    public function firstKey(callable $f)
     {
         foreach ($this->items as $keyIndex => $value) {
             $key = $this->keyLookupTable->index($keyIndex);
@@ -239,7 +272,7 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         }
         return null;
     }
-    
+
     public function first(callable $f)
     {
         foreach ($this->items as $keyIndex => $value) {
@@ -327,7 +360,12 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         $keyedItems = [];
 
         foreach ($associativeArray as $key => $value) {
-            $keyedItems[$keyLookupTable->indexFor($key)] = $value;
+            $keyIndex = self::keyIndexForKey(
+                $keyLookupTable,
+                $keyHashFunction,
+                $key
+            );
+            $keyedItems[$keyIndex] = $value;
         }
 
         return new self(
@@ -389,22 +427,32 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
         return $lookupTable->add($keyToAdd);
     }
 
+    private static function keyIndexForKey(
+        Collection $keyLookupTable,
+        callable $keyHashFunction,
+        mixed $key
+    ): ?int {
+        return $keyLookupTable->firstIndex(
+            fn($item) => $keyHashFunction($item) == $keyHashFunction($key)
+        );
+    }
+
     public function reindexKeys(
         int $keyOffset = 0
     ): self {
         $newKeyLookupTable = [];
         $newItems = [];
 
-        $findKeyForValue = function(array $array, mixed $valueToFind): ?int {
+        $findKeyForValue = function (array $array, mixed $valueToFind): ?int {
             foreach ($array as $key => $value) {
                 if ($value === $valueToFind) {
                     return $key;
                 }
             }
-    
-            return null;    
+
+            return null;
         };
-        
+
         foreach ($this->items as $keyIndex => $value) {
             $key = $this->keyLookupTable->index($keyIndex);
 
@@ -414,7 +462,7 @@ final class Dictionary implements IteratorAggregate, Countable, ArrayAccess
                     $foundKey = true;
                 }
             }
-            
+
             if ( ! $foundKey) {
                 $newKeyLookupTable[$keyOffset + count($newKeyLookupTable)] = $key;
             }
