@@ -16,8 +16,14 @@ final class MutableDictionary implements IteratorAggregate, Countable
 
     public function has(mixed $key): bool
     {
-        $keyIndex = $this->keyLookupTable->indexFor($key);
-        return array_key_exists($keyIndex, $this->items);
+        return array_key_exists(
+            self::keyIndexForKey(
+                $this->keyLookupTable,
+                $this->keyHashFunction,
+                $key
+            ),
+            $this->items
+        );
     }
 
     public function add(mixed $key, mixed $value): void
@@ -29,7 +35,12 @@ final class MutableDictionary implements IteratorAggregate, Countable
         );
 
         $newItems = $this->items;
-        $newItems[$newKeyLookupTable->indexFor($key)] = $value;
+        $keyIndex = self::keyIndexForKey(
+            $newKeyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
+        $newItems[$keyIndex] = $value;
 
         $this->keyLookupTable = $newKeyLookupTable;
         $this->items = $newItems;
@@ -37,12 +48,22 @@ final class MutableDictionary implements IteratorAggregate, Countable
 
     public function get(mixed $key)
     {
-        return $this->items[$this->keyLookupTable->indexFor($key)] ?? null;
+        $keyIndex = self::keyIndexForKey(
+            $this->keyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
+
+        return $this->items[$keyIndex] ?? null;
     }
 
     public function remove(mixed $key): void
     {
-        $keyIndex = $this->keyLookupTable->indexFor($key);
+        $keyIndex = self::keyIndexForKey(
+            $this->keyLookupTable,
+            $this->keyHashFunction,
+            $key
+        );
 
         unset($this->items[$keyIndex]);
 
@@ -123,7 +144,13 @@ final class MutableDictionary implements IteratorAggregate, Countable
                 $resultKey
             );
 
-            $newItems[$newKeyLookupTable->indexFor($resultKey)] = $resultValue;
+            $keyIndex = self::keyIndexForKey(
+                $newKeyLookupTable,
+                $this->keyHashFunction,
+                $resultKey
+            );
+            
+            $newItems[$keyIndex] = $resultValue;
         }
 
         return new self(
@@ -181,7 +208,12 @@ final class MutableDictionary implements IteratorAggregate, Countable
         $keyedItems = [];
 
         foreach ($associativeArray as $key => $value) {
-            $keyedItems[$keyLookupTable->indexFor($key)] = $value;
+            $keyIndex = self::keyIndexForKey(
+                $keyLookupTable,
+                $keyHashFunction,
+                $key
+            );
+            $keyedItems[$keyIndex] = $value;
         }
 
         return new self(
@@ -209,6 +241,16 @@ final class MutableDictionary implements IteratorAggregate, Countable
         }
 
         return (string) $key;
+    }
+
+    private static function keyIndexForKey(
+        Collection $keyLookupTable,
+        callable $keyHashFunction,
+        mixed $key
+    ): ?int {
+        return $keyLookupTable->firstIndex(
+            fn($item) => $keyHashFunction($item) == $keyHashFunction($key)
+        );
     }
 
     private static function addKeyToLookupTable(
